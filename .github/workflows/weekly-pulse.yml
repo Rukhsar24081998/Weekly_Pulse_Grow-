@@ -71,6 +71,13 @@ jobs:
       - name: Phase 6 — sign-off report
         run: python scripts/phase6_signoff.py --require-artifacts
 
+      - name: Sync pulse data to public API (Railway)
+        env:
+          PUBLIC_PULSE_API_URL: ${{ secrets.PUBLIC_PULSE_API_URL }}
+          SYNC_SECRET: ${{ secrets.SYNC_SECRET }}
+        if: env.PUBLIC_PULSE_API_URL != '' && env.SYNC_SECRET != ''
+        run: python scripts/sync_public_api.py
+
       - name: Upload pulse artifacts
         uses: actions/upload-artifact@v4
         with:
