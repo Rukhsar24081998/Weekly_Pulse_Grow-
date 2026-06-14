@@ -237,3 +237,16 @@ Setup: [Docs/github-actions.md](Docs/github-actions.md) — add 4 repository sec
 - **GitHub Actions** weekly run creates Gmail **draft only** — operator sends manually
 - MCP OAuth lives on **Railway** (`MCP_SERVER_URL`), not in repo secrets beyond the URL/doc ID
 - Export column formats may differ — update `Docs/review-export-formats.md` if parsers fail
+
+## Edge-case behavior
+
+| Scenario | Behavior |
+|----------|----------|
+| **Sparse reviews** (< 50 in window) | Pulse still generated; themes may merge or show low counts |
+| **Single-store export only** | Warning logged; pipeline continues with available store (ADR-018) |
+| **All low ratings** | Themes still assigned; action ideas reflect urgency |
+| **MCP timeout / failure** | Local pulse artifacts saved under `phases/phase-3/`; retry `python -m src.publish.run` or `draft_run` only |
+| **Re-run same week** | Appends to configured Google Doc; creates a **new** Gmail draft each run |
+| **Export format drift** | Parsers may fail — update `Docs/review-export-formats.md` and fixtures |
+
+Phase 6 sign-off: `python scripts/phase6_signoff.py` → `phases/phase-6/signoff_report.json`

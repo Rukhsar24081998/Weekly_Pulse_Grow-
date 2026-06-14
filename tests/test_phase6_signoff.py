@@ -113,3 +113,5 @@ class TestPhase6SignoffScript:
             payload = json.loads(out.read_text(encoding="utf-8"))
             assert payload["phase"] == 6
             assert payload["automated_checks_pass"] is True
+            assert payload["success_criteria"]["all_automated_pass"] is True
+            assert payload["exit_criteria"]["P6-EC-02_pytest_phases_1_3"] is True

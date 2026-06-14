@@ -16,6 +16,82 @@ This log records **major technical and logical decisions** made while designing 
 
 ---
 
+## ADR-025 — Re-run same week: append doc, new draft
+
+| Field | Value |
+|-------|-------|
+| **Status** | accepted |
+| **Date** | 2026-06-14 |
+| **Phase** | 5 |
+| **Category** | Integration |
+
+**Context:** Operators may re-run the weekly workflow after fixing data or MCP failures. Need predictable Google Workspace behavior.
+
+**Decision:** On re-run for the same week, **append** pulse content to the configured Google Doc (`PUBLISH_GOOGLE_DOC_ID`) via MCP `append_to_doc`. Create a **new Gmail draft** each run (no in-place draft update).
+
+**Consequences:** Doc accumulates weekly sections if re-run multiple times — operator may trim manually. Each draft is independent for review.
+
+**Alternatives considered:** Create new doc each run — rejected because Railway MCP has no `createDocument` tool.
+
+---
+
+## ADR-024 — Email body: header + doc link + full pulse
+
+| Field | Value |
+|-------|-------|
+| **Status** | accepted |
+| **Date** | 2026-06-14 |
+| **Phase** | 5 |
+| **Category** | Output |
+
+**Context:** Gmail draft must be self-contained for operator review while linking to the Google Doc.
+
+**Decision:** Email body includes a short header (product, week ending, review window), optional **Google Doc URL** from Phase 4 metadata, then the **full pulse markdown** below a separator (`src/publish/draft_pipeline.py` → `build_email_body`).
+
+**Consequences:** Draft is readable without opening the doc; doc link supports leadership who prefer Docs.
+
+**Alternatives considered:** Summary + link only — rejected because Problem Statement expects draft ready to review/send with pulse content.
+
+---
+
+## ADR-023 — GitHub Actions weekly scheduler (Phase 6)
+
+| Field | Value |
+|-------|-------|
+| **Status** | accepted |
+| **Date** | 2026-06-14 |
+| **Phase** | 6 |
+| **Category** | Technical |
+
+**Context:** ADR-013 assumed MCP publish required a Cursor agent session. Railway HTTP MCP + GitHub Actions enables scheduled unattended runs.
+
+**Decision:** Add **CI** (pytest on push/PR) and **Weekly Pulse** workflow (Monday 09:00 IST) that runs fetch → ingest → themes (`--no-groq` default) → pulse → validate → `e2e_run` → sign-off. Secrets: `GROQ_API_KEY`, `MCP_SERVER_URL`, `PUBLISH_GOOGLE_DOC_ID`, `DRAFT_RECIPIENT`.
+
+**Consequences:** Partially supersedes ADR-013 unattended-cron limitation for this deployment. Operator still reviews Gmail draft manually.
+
+**Alternatives considered:** Cursor-only weekly runs — retained as Option C in runbook for local/agent use.
+
+---
+
+## ADR-022 — Railway HTTP MCP for publish (Phase 4–5)
+
+| Field | Value |
+|-------|-------|
+| **Status** | accepted |
+| **Date** | 2026-06-14 |
+| **Phase** | 4 |
+| **Category** | Integration |
+
+**Context:** Problem Statement requires MCP-only Google integration. Cursor `@a-bonus/google-docs-mcp` works in IDE but not in headless CI. A deployed MCP server exposes HTTP tools.
+
+**Decision:** Implement **`src/publish/mcp_client.py`** HTTP client against Railway MCP (`MCP_SERVER_URL`). Tools: `append_to_doc`, `create_email_draft`. Pre-create Google Doc; set `PUBLISH_GOOGLE_DOC_ID` in `.env`. No Google SDK in `src/`.
+
+**Consequences:** CLI and GitHub Actions can publish without Cursor. Server repo: [Rukhsar24081998/MCP-SERVER](https://github.com/Rukhsar24081998/MCP-SERVER). ADR-008 remains valid for Cursor-native MCP; ADR-022 is the primary path for automated publish.
+
+**Alternatives considered:** Google SDK in CI — rejected per Problem Statement.
+
+---
+
 ## ADR-009 — Artifact-based handoff between pipeline and agent
 
 | Field | Value |
@@ -481,8 +557,8 @@ Validator blocks publish if PII patterns remain. Agent must not call MCP when va
 | ~~Default review window~~ | ~~8, 10, or 12 weeks~~ | **Resolved** — ADR-016 (12 weeks) |
 | ~~Single-store missing~~ | ~~Warn vs abort~~ | **Resolved** — ADR-018 (warn) |
 | ~~Short window (<8 weeks)~~ | ~~Warn vs abort~~ | **Resolved** — ADR-019 (warn; abort at sign-off) |
-| Email body format | Full pulse vs summary + doc link | Phase 3 |
-| Re-run same week | New doc/draft vs update existing | Phase 5 |
+| ~~Email body format~~ | ~~Full pulse vs summary + doc link~~ | **Resolved** — ADR-024 |
+| ~~Re-run same week~~ | ~~New doc/draft vs update existing~~ | **Resolved** — ADR-025 |
 | Hybrid LLM labeling | ~~Enable or rules-only~~ | **Resolved** — ADR-021 (Groq hybrid) |
 | Groq model | Default vs alternate | ADR-021 |
 

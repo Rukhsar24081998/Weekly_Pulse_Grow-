@@ -1,8 +1,9 @@
 # Weekly App Review Pulse — Phase-Wise Implementation Plan
 
-**Document version:** 2.0  
+**Document version:** 2.1  
 **Reference:** [ProblemStatement.md](./ProblemStatement.md) · [architecture.md](./architecture.md)  
-**Evaluation:** Each phase has an `eval.md` with tests and exit criteria under [phases/](./phases/)
+**Evaluation:** Each phase has an `eval.md` with tests and exit criteria under [phases/](./phases/)  
+**Repo:** [Weekly_Pulse_Grow-](https://github.com/Rukhsar24081998/Weekly_Pulse_Grow-)
 
 ---
 
@@ -23,6 +24,22 @@ This plan breaks the Weekly App Review Pulse into seven sequential phases. Each 
 **Total:** ~2–3 weeks for a single developer. Phases 4–5 require MCP OAuth to be working (established in Phase 0).
 
 **Governance rule:** Do not start the next phase until the current phase passes **all** exit criteria in its `eval.md`.
+
+### Implementation status (Groww App — LIP 4)
+
+| Phase | Status | Key artifacts |
+|-------|--------|---------------|
+| 0 | **Complete** | `config/`, `scripts/fetch_public_reviews.py`, phase-0 reports |
+| 1 | **Complete** | `src/ingest/`, `phases/phase-1/reviews.json` |
+| 2 | **Complete** | `src/themes/` (rules + Groq), `phases/phase-2/themes.json` |
+| 3 | **Complete** | `src/pulse/`, `src/guardrails/`, `phases/phase-3/pulse.md` |
+| 4 | **Complete** | `src/publish/` HTTP MCP client, `prompts/publish-doc.md` |
+| 5 | **Complete** | `src/publish/draft_run.py`, `e2e_run.py`, `prompts/weekly-pulse-agent.md` |
+| 6 | **Complete** (automated) | `.github/workflows/`, `scripts/phase6_signoff.py`, golden schema tests |
+
+**MCP publish:** Railway HTTP server ([mcp-server-rukhsar.up.railway.app](https://mcp-server-rukhsar.up.railway.app)) — not Google SDK in `src/`.  
+**iOS data:** Public RSS multi-country fetch (IN, US, GB, AE, SG, CA, AU); full 12-week iOS still needs App Store Connect export.  
+**Manual sign-off pending:** Teammate reproducibility test (P6-T-12) — optional for LIP demo.
 
 ---
 
@@ -616,6 +633,16 @@ LIP 4 is complete when someone else can run it — not when only the original de
 - Complete eval sign-offs for Phases 0–5 or document justified exceptions.
 - Capture evidence: doc link, draft screenshot, run JSON snippet, test output.
 
+#### 6.7 — GitHub Actions (weekly scheduler) ✅
+
+- **CI** (`.github/workflows/ci.yml`): `pytest` on every push/PR to `main`.
+- **Weekly Pulse** (`.github/workflows/weekly-pulse.yml`): cron **Monday 09:00 IST** — fetch → ingest → themes → pulse → validate → MCP publish → sign-off.
+- Repository secrets: `GROQ_API_KEY`, `MCP_SERVER_URL`, `PUBLISH_GOOGLE_DOC_ID`, `DRAFT_RECIPIENT`.
+- Operator guide: [github-actions.md](./github-actions.md).
+- Artifacts uploaded for 30 days (pulse, run metadata, sign-off report).
+
+**Implemented:** `scripts/phase6_signoff.py`, `tests/fixtures/expected-pulse-schema.json`, `tests/test_phase6_signoff.py` (66 tests total).
+
 ### Inputs
 
 - Complete system from Phases 0–5
@@ -628,6 +655,7 @@ LIP 4 is complete when someone else can run it — not when only the original de
 - Complete README with setup, MCP, runbook, limitations
 - Updated decision log
 - Project sign-off against success criteria
+- GitHub Actions CI + weekly scheduler ([github-actions.md](./github-actions.md))
 
 ### Risks and mitigations
 
@@ -645,18 +673,36 @@ All success criteria verified; teammate reproducibility passed; README complete;
 
 ## Agent + MCP Runbook (Weekly)
 
-Use this sequence when running the full workflow in Cursor:
+### Option A — GitHub Actions (automated)
+
+1. Ensure four repository secrets are set (see [github-actions.md](./github-actions.md)).
+2. **Actions → Weekly Pulse → Run workflow** (manual test) or wait for **Monday 09:00 IST** schedule.
+3. Download artifacts; review Gmail draft manually before sending.
+
+### Option B — Local CLI
+
+```bash
+source .venv/bin/activate
+python scripts/fetch_public_reviews.py --weeks 12
+python -m src.ingest.run --weeks 12
+python -m src.themes.run
+python -m src.pulse.run
+python -m src.guardrails.validate phases/phase-3/pulse.md
+python -m src.publish.e2e_run
+python scripts/phase6_signoff.py
+```
+
+### Option C — Cursor agent
+
+Use this sequence when running in Cursor with agent prompts:
 
 ```
-1. Place latest App Store + Play Store exports in data/raw/
+1. Place latest Play Store export in data/raw/ (App Store optional — RSS or Connect export)
 2. Run ingestion for configured week window (8–12 weeks)
-3. Run theme clustering on normalized reviews (subsample to 1,000; Groq ≤ 10 calls, ~32K tokens)
+3. Run theme clustering on normalized reviews (subsample to 1,000; Groq optional)
 4. Run pulse generation and confirm validator pass
-5. Agent: read validated pulse artifact
-6. Agent: MCP createDocument + write pulse to Google Doc
-7. Agent: MCP createDraft to configured self/alias with pulse body
-8. Agent: write run metadata with doc + draft IDs and run stats
-9. Operator: review draft in Gmail; forward manually if desired
+5. python -m src.publish.e2e_run  (Railway MCP — Doc + Gmail draft)
+6. Operator: review draft in Gmail; forward manually if desired
 ```
 
 ---
@@ -689,6 +735,7 @@ flowchart LR
 | Google Doc (via MCP) | 4 | Leadership, cross-functional |
 | Gmail draft (via MCP) | 5 | Operator |
 | README + tests + sign-off | 6 | Teammates, reviewers |
+| GitHub Actions CI + weekly scheduler | 6 | Automated weekly runs |
 
 ---
 
@@ -696,4 +743,6 @@ flowchart LR
 
 - Architecture: [architecture.md](./architecture.md)
 - Decisions: [decision.md](./decision.md)
+- GitHub Actions: [github-actions.md](./github-actions.md)
+- MCP integration: [mcp-server-integration.md](./mcp-server-integration.md)
 - Phase evaluations: [phases/](./phases/)
