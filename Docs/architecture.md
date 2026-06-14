@@ -1,6 +1,6 @@
 # Weekly App Review Pulse — System Architecture
 
-**Document version:** 2.0  
+**Document version:** 2.1  
 **Reference:** [ProblemStatement.md](./ProblemStatement.md)  
 **Product context:** **Groww App** (Milestone 1 — iOS + Android)  
 **Approach:** Cursor AI agent + Python pipeline + Google Workspace MCP
@@ -9,7 +9,7 @@
 
 ## 1. Executive Summary
 
-This document defines the technical architecture for a **Weekly App Review Pulse** agent. The system ingests public App Store and Play Store reviews, clusters them into themes, generates a scannable weekly note, and delivers it through **Google Docs** and a **Gmail draft** — with all Google Workspace access routed through an **MCP server in Cursor**, not application-level API code.
+This document defines the technical architecture for a **Weekly App Review Pulse** agent. The system ingests public App Store and Play Store reviews, clusters them into themes, generates a scannable weekly note, and delivers it through **Google Docs** and a **Gmail draft** — with all Google Workspace access routed through an **MCP server in Cursor**, not application-level API code. A **read-only public API and Vercel frontend** (Phase 7) expose the latest pulse to stakeholders without local setup.
 
 The system serves three audiences with one artifact:
 
@@ -53,7 +53,7 @@ flowchart LR
         SDK[Direct Google API in repo]
         SEND[Auto-send email]
         CRM[Support ticket systems]
-        BI[Dashboards / BI tools]
+        BI[General BI / analytics platforms]
     end
 
     EXP --> PIPE --> AGENT --> MCP --> OUT
@@ -67,15 +67,16 @@ flowchart LR
 | **Cursor Agent** | Orchestrator for MCP steps and recovery | Reads artifacts, validates constraints, calls MCP tools |
 | **Python Pipeline** | Offline analysis engine | Ingest → normalize → theme → pulse → guardrails |
 | **MCP Server** | Google OAuth + API proxy | Docs creation, content write, Gmail draft |
-| **Reviewer (leadership)** | Consumer of pulse | Reads Google Doc or forwarded email draft |
+| **Reviewer (leadership)** | Consumer of pulse | Reads Google Doc, forwarded email draft, or public Vercel dashboard |
 
 ### 2.3 Execution Model
 
-The workflow is **semi-automated**, not a headless cron job:
+The workflow is **semi-automated** with optional full automation via GitHub Actions:
 
-1. **Batch phase (local):** Operator runs the Python pipeline to produce validated artifacts on disk.
-2. **Publish phase (agent + MCP):** Operator (or agent on instruction) publishes artifacts to Google via MCP tools in Cursor.
-3. **Human gate:** Gmail draft is created but **not sent** — operator reviews before forwarding.
+1. **Batch phase (local or CI):** Operator or GitHub Actions runs the Python pipeline to produce validated artifacts on disk.
+2. **Publish phase (MCP):** `src.publish.e2e_run` publishes artifacts to Google via Railway MCP HTTP server (or agent in Cursor).
+3. **Public sync phase (CI):** GitHub Actions POSTs phase artifacts to Railway pulse-api (`scripts/sync_public_api.py`).
+4. **Human gate:** Gmail draft is created but **not sent** — operator reviews before forwarding.
 
 This split is intentional: analysis is testable and repeatable; Google integration stays inside MCP where OAuth and API scope are managed.
 
@@ -313,7 +314,15 @@ LIP-4-4/
 │   ├── ingest/                 # Phase 1
 │   ├── themes/                 # Phase 2 (rules + Groq client)
 │   ├── pulse/                  # Phase 3
-│   └── guardrails/             # Phase 3
+│   ├── guardrails/             # Phase 3
+│   ├── publish/                # Phases 4–5 (Railway MCP HTTP client)
+│   └── api/                    # Phase 7 (FastAPI read + sync)
+├── frontend/                   # Phase 7 (Next.js dashboard)
+├── scripts/
+│   ├── sync_public_api.py      # Push phases/ to Railway pulse-api
+│   └── phase6_signoff.py
+├── Dockerfile                  # Railway pulse-api image
+├── railway.toml
 ├── prompts/
 │   ├── weekly-pulse-agent.md
 │   ├── publish-doc.md
@@ -708,7 +717,8 @@ No review text or PII in run logs — IDs and counts only. This supports weekly 
 | 3 | Pulse generator, PII redactor, validators |
 | 4 | Agent + MCP Google Docs flow |
 | 5 | Agent + MCP Gmail draft + E2E orchestration |
-| 6 | Golden tests, README, success-criteria validation |
+| 6 | Golden tests, README, success-criteria validation, GitHub Actions |
+| 7 | FastAPI read API, Next.js frontend, Railway + Vercel deploy, artifact sync |
 
 See [phase-wise-implementationplan.md](./phase-wise-implementationplan.md) for phase activities and [phases/](./phases/) for per-phase eval criteria.
 
@@ -722,6 +732,7 @@ See [phase-wise-implementationplan.md](./phase-wise-implementationplan.md) for p
 | Slack/Teams notification | Still avoid Google SDK; use separate MCP or webhook |
 | Multi-product support | Parameterize product name and export paths |
 | Automated export fetch | Only via official APIs/exports — not scraping |
+| Run pipeline from UI | Trigger GitHub Actions workflow from frontend (F3) |
 
 ---
 
@@ -822,9 +833,86 @@ Rules and aggregation run on the **1,000-review sample only**. Phase 1 artifact 
 
 ---
 
-## 17. References
+## 17. Public Deployment Architecture (Phase 7)
+
+Phase 7 adds a **read-only consumption layer** on top of existing phase artifacts. It does not change ingestion, pulse generation, or MCP publish logic.
+
+### 17.1 Topology
+
+```mermaid
+flowchart LR
+    subgraph CI["GitHub Actions"]
+        WF[Weekly Pulse workflow]
+        SYNC[sync_public_api.py]
+    end
+
+    subgraph Public["Public services"]
+        VER[Vercel frontend]
+        API[Railway pulse-api]
+    end
+
+    subgraph Existing["Unchanged"]
+        MCP[Railway MCP-SERVER]
+        GDOC[Google Doc + Gmail draft]
+    end
+
+    WF --> PIPE[Python pipeline]
+    PIPE --> ART[(phases/ artifacts)]
+    WF --> MCP
+    MCP --> GDOC
+    WF --> SYNC
+    SYNC -->|POST /api/sync/artifacts| API
+    API --> STORE[(/app/phases in container)]
+    VER -->|GET /api/pulse/latest| API
+```
+
+| Service | Platform | Role |
+|---------|----------|------|
+| **pulse-api** | Railway (this repo) | FastAPI; serves latest pulse from synced artifacts |
+| **frontend** | Vercel (`frontend/`) | Next.js dashboard + pulse page |
+| **MCP-SERVER** | Railway (separate repo) | Google Doc + Gmail draft only |
+
+**Live URLs (Groww):**
+
+- Frontend: [weekly-pulse-grow.vercel.app](https://weekly-pulse-grow.vercel.app)
+- API: [weeklypulsegrow-production.up.railway.app](https://weeklypulsegrow-production.up.railway.app)
+
+### 17.2 API surface
+
+| Endpoint | Auth | Purpose |
+|----------|------|---------|
+| `GET /api/health` | None | Liveness + artifact flags |
+| `GET /api/status` | None | Pipeline snapshot for dashboard |
+| `GET /api/pulse/latest` | None | Full validated pulse JSON + markdown |
+| `GET /api/themes/latest` | None | Latest themes artifact |
+| `POST /api/sync/artifacts` | Bearer `SYNC_SECRET` | Write phase artifacts to disk |
+
+Application code reads the same deliverable paths as the offline pipeline (`config/product.yaml` → `phases/phase-N/`).
+
+### 17.3 Artifact sync (no persistent volume)
+
+Railway hobby plans often lack persistent volumes. Instead:
+
+1. GitHub Actions runs the full weekly pipeline.
+2. `scripts/sync_public_api.py` POSTs `pulse_json`, `pulse_md`, `reviews`, `themes`, and publish metadata to pulse-api.
+3. pulse-api writes files under `/app/phases/` in the container filesystem.
+
+**Operational note:** A Railway **redeploy clears synced data**. Recovery: re-run sync locally, trigger Weekly Pulse workflow, or wait for the next scheduled Monday run.
+
+Secrets: `SYNC_SECRET` (Railway + GitHub, must match), `PUBLIC_PULSE_API_URL` (GitHub), `CORS_ORIGINS` (Railway — Vercel URL), `NEXT_PUBLIC_API_URL` (Vercel).
+
+Deploy guide: [public-deployment.md](./public-deployment.md).
+
+### 17.4 Trust boundary
+
+Public endpoints expose **already-validated, redacted pulse content** only. Sync is write-protected by `SYNC_SECRET`. No Google credentials, raw exports, or MCP tools are exposed on pulse-api.
+
+---
+
+## 18. References
 
 - [ProblemStatement.md](./ProblemStatement.md)
 - [phase-wise-implementationplan.md](./phase-wise-implementationplan.md)
+- [public-deployment.md](./public-deployment.md)
 - [decision.md](./decision.md)
 - MCP server: [@a-bonus/google-docs-mcp](https://www.npmjs.com/package/@a-bonus/google-docs-mcp)
