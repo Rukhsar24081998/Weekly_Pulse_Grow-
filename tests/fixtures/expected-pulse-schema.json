@@ -1,0 +1,31 @@
+{
+  "required_top_level_keys": [
+    "product",
+    "week_ending",
+    "review_window_weeks",
+    "window_start",
+    "window_end",
+    "total_reviews",
+    "sample_size",
+    "top_themes",
+    "quotes",
+    "action_ideas",
+    "word_count",
+    "validation_passed",
+    "markdown"
+  ],
+  "theme_count": 3,
+  "quote_count": 3,
+  "action_count": 3,
+  "max_words": 250,
+  "required_theme_keys": [
+    "rank",
+    "theme_id",
+    "label",
+    "summary",
+    "review_count",
+    "avg_rating"
+  ],
+  "required_quote_keys": ["theme_id", "text", "rating", "store"],
+  "required_action_keys": ["theme_id", "action", "rationale"]
+}

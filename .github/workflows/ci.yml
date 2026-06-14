@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -e ".[dev]"
+
+      - name: Run test suite
+        run: pytest tests/ -q
+
+      - name: Verify no Google SDK in src
+        run: |
+          ! grep -r "googleapiclient\|google.oauth2\|googleapis.com" src/ || \
+            (echo "Google SDK found in src/" && exit 1)

@@ -211,16 +211,29 @@ Detailed runbook: [Docs/phase-wise-implementationplan.md](Docs/phase-wise-implem
 |-------|------|--------|
 | 0 | Foundation & Planning | Complete |
 | 1 | Review Ingestion | **Complete** |
-| 2 | Theme Clustering | Not started |
-| 3 | Pulse & Guardrails | Not started |
+| 2 | Theme Clustering | **Complete** |
+| 3 | Pulse & Guardrails | **Complete** |
 | 4 | Google Docs via MCP | **Complete** |
 | 5 | Gmail Draft & E2E | **Complete** |
-| 6 | Validation & Hardening | Not started |
+| 6 | Validation & Hardening | **Complete** |
+
+---
+
+## GitHub Actions
+
+| Workflow | When | What |
+|----------|------|------|
+| **CI** | Every push to `main` | Full `pytest` suite |
+| **Weekly Pulse** | Monday 09:00 IST | Fetch → pipeline → Google Doc + Gmail draft |
+
+Setup: [Docs/github-actions.md](Docs/github-actions.md) — add 4 repository secrets, then **Actions → Weekly Pulse → Run workflow** to test.
 
 ---
 
 ## Known limitations
 
-- MCP publish requires an active Cursor agent session (not headless cron).
-- MCP OAuth must be configured per developer machine.
-- Export column formats may differ — update `docs/review-export-formats.md` if parsers fail.
+- **App Store RSS** caps at ~500 reviews per country (~1–2 weeks); full 12-week iOS needs App Store Connect export
+- **Groq** free tier may rate-limit; GitHub Actions weekly job uses `--no-groq` by default
+- **GitHub Actions** weekly run creates Gmail **draft only** — operator sends manually
+- MCP OAuth lives on **Railway** (`MCP_SERVER_URL`), not in repo secrets beyond the URL/doc ID
+- Export column formats may differ — update `Docs/review-export-formats.md` if parsers fail
