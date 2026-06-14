@@ -13,12 +13,16 @@ Automated CI and weekly pulse scheduling for [Weekly_Pulse_Grow-](https://github
 
 Settings → **Secrets and variables → Actions → Repository secrets**
 
-| Secret | Purpose |
-|--------|---------|
-| `GROQ_API_KEY` | Optional Groq themes (manual run with `use_groq=true`) |
-| `MCP_SERVER_URL` | Railway MCP server |
-| `PUBLISH_GOOGLE_DOC_ID` | Google Doc for append |
-| `DRAFT_RECIPIENT` | Gmail draft recipient |
+Use these **exact names** (case-sensitive):
+
+| Secret | Purpose | Example |
+|--------|---------|---------|
+| `MCP_SERVER_URL` | Railway MCP server | `https://mcp-server-rukhsar.up.railway.app` |
+| `PUBLISH_GOOGLE_DOC_ID` | Google Doc for append | your doc ID from the URL |
+| `DRAFT_RECIPIENT` | Gmail draft recipient | `you@example.com` |
+| `GROQ_API_KEY` | Optional Groq themes (manual run with `use_groq=true`) | from console.groq.com |
+
+Do **not** use placeholder names like `SECA` — the workflow reads the names above exactly.
 
 ## Weekly schedule
 
