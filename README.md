@@ -273,3 +273,30 @@ python -m src.api --reload     # dev auto-reload
 Docs: http://127.0.0.1:8000/docs (Swagger UI)
 
 Run the pipeline first so artifacts exist under `phases/phase-*`.
+
+---
+
+## Frontend (Phase 7 F2 — pulse viewer)
+
+Optional Next.js UI in `frontend/` — read-only dashboard over the API.
+
+**Terminal 1 — API:**
+
+```bash
+source .venv/bin/activate
+pip install fastapi "uvicorn[standard]" httpx
+python -m src.api
+```
+
+**Terminal 2 — frontend:**
+
+```bash
+cd frontend
+cp .env.local.example .env.local
+npm install
+npm run dev
+```
+
+Open http://localhost:3000 (dashboard) and http://localhost:3000/pulse (full pulse).
+
+Does **not** change CLI, GitHub Actions, or MCP publish.
