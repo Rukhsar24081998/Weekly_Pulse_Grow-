@@ -250,3 +250,26 @@ Setup: [Docs/github-actions.md](Docs/github-actions.md) — add 4 repository sec
 | **Export format drift** | Parsers may fail — update `Docs/review-export-formats.md` and fixtures |
 
 Phase 6 sign-off: `python scripts/phase6_signoff.py` → `phases/phase-6/signoff_report.json`
+
+---
+
+## Frontend API (Phase 7 — read-only)
+
+Optional HTTP layer for a web UI. **Does not change** the CLI pipeline or GitHub Actions.
+
+```bash
+pip install -e ".[api]"
+python -m src.api              # http://127.0.0.1:8000
+python -m src.api --reload     # dev auto-reload
+```
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /api/health` | Service status + which phase artifacts exist |
+| `GET /api/status` | Review stats, last publish, pulse summary |
+| `GET /api/pulse/latest` | Latest pulse JSON + markdown + validation |
+| `GET /api/themes/latest` | Latest `themes.json` |
+
+Docs: http://127.0.0.1:8000/docs (Swagger UI)
+
+Run the pipeline first so artifacts exist under `phases/phase-*`.
