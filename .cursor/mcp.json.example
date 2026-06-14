@@ -1,0 +1,43 @@
+# MCP configuration example
+
+Copy to `~/.cursor/mcp.json` (or merge into your existing MCP config).  
+**Do not commit** a file containing real `GOOGLE_CLIENT_ID` or `GOOGLE_CLIENT_SECRET`.
+
+## Prerequisites
+
+1. [Google Cloud Console](https://console.cloud.google.com/) project with APIs enabled:
+   - Google Docs API  
+   - Google Drive API  
+   - Gmail API  
+2. OAuth **Desktop** client created; copy Client ID and Client Secret.
+3. Node.js available for `npx`.
+
+## Example `mcp.json` entry
+
+```json
+{
+  "mcpServers": {
+    "google-docs": {
+      "command": "npx",
+      "args": ["-y", "@a-bonus/google-docs-mcp"],
+      "env": {
+        "GOOGLE_CLIENT_ID": "YOUR_CLIENT_ID.apps.googleusercontent.com",
+        "GOOGLE_CLIENT_SECRET": "YOUR_CLIENT_SECRET"
+      }
+    }
+  }
+}
+```
+
+## Smoke test (Phase 0)
+
+After saving config and restarting Cursor:
+
+1. Confirm **google-docs** MCP server is enabled in Cursor settings.
+2. Ask the agent to list available MCP tools — expect Docs (`createDocument`) and Gmail (`createDraft`, `listDrafts`).
+3. Complete OAuth in the browser on first tool use.
+4. Optionally call a lightweight Gmail tool (e.g. list labels) to verify auth.
+
+Record success in [Docs/phases/phase-0/eval.md](../Docs/phases/phase-0/eval.md) (P0-T-01 through P0-T-04).
+
+See [architecture.md](../Docs/architecture.md) §7 for MCP boundary rules.

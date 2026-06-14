@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+
+# Shared raw inputs (never commit store exports)
+data/raw/*
+!data/raw/.gitkeep
+!data/raw/README.md
+!data/raw/APP_STORE_EXPORT_NEEDED.md
+
+# Phase deliverables (generated JSON/MD; keep README + DELIVERABLES.md)
+phases/phase-*/*.json
+phases/phase-*/*.md
+!phases/phase-*/README.md
+!phases/phase-*/DELIVERABLES.md
+!phases/README.md
+
+# IDE / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Secrets — never commit OAuth credentials
+**/mcp.json
+!**/mcp.json.example
+*credentials*.json
+*client_secret*
+
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/

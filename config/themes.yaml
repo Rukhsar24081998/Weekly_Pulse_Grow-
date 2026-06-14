@@ -1,0 +1,144 @@
+# Groww App — theme taxonomy (Phase 0 / expanded Phase 2)
+# Clustering uses ≤ 5 themes per run; pulse surfaces top 3 by volume.
+
+fallback_theme_id: performance
+
+themes:
+  - id: onboarding
+    label: Onboarding & account setup
+    priority: 1
+    keywords:
+      - sign up
+      - signup
+      - register
+      - first time
+      - open account
+      - account opening
+      - get started
+      - new user
+      - onboarding
+      - first sip
+      - easy to start
+
+  - id: kyc
+    label: KYC & verification
+    priority: 2
+    keywords:
+      - kyc
+      - verification
+      - verify
+      - pan
+      - aadhaar
+      - documents
+      - identity
+      - pending verification
+      - kyc pending
+
+  - id: payments
+    label: Payments, UPI & add money
+    priority: 3
+    keywords:
+      - payment
+      - upi
+      - add money
+      - deposit
+      - bank transfer
+      - payment failed
+      - transaction failed
+      - sip
+      - auto pay
+      - mandate
+      - checkout
+
+  - id: statements
+    label: Portfolio, statements & reports
+    priority: 4
+    keywords:
+      - statement
+      - portfolio
+      - holdings
+      - p&l
+      - profit
+      - loss
+      - tax
+      - capital gains
+      - report
+      - download statement
+      - invoice
+      - tax statement
+
+  - id: withdrawals
+    label: Redemption, withdrawal & refunds
+    priority: 5
+    keywords:
+      - withdraw
+      - withdrawal
+      - redeem
+      - redemption
+      - payout
+      - refund
+      - money not credited
+      - amount not received
+      - sell proceeds
+
+  - id: login
+    label: Login, OTP & security
+    priority: 6
+    keywords:
+      - login
+      - log in
+      - otp
+      - password
+      - pin
+      - biometric
+      - fingerprint
+      - locked out
+      - cannot login
+      - two factor
+
+  - id: discovery
+    label: Search, explore & investing features
+    priority: 7
+    keywords:
+      - search
+      - find stock
+      - explore
+      - mutual fund
+      - ipo
+      - fno
+      - options
+      - charts
+      - watchlist
+      - discover
+      - browse
+      - intraday
+      - scalping
+      - limit order
+      - trading
+      - stock
+      - demat
+      - f&o
+
+  - id: performance
+    label: App performance, bugs & crashes
+    priority: 8
+    keywords:
+      - crash
+      - slow
+      - freeze
+      - lag
+      - bug
+      - not working
+      - error
+      - stuck
+      - force close
+      - update broke
+      - hang
+      - glitch
+      - customer support
+      - customer service
+      - support team
+      - brokerage
+      - broker
+      - charges
+      - brokerage charges

@@ -1,0 +1,106 @@
+# Groww App — product configuration (Phase 0)
+# Update store listing IDs if your Milestone 1 exports use different apps.
+
+product:
+  name: Groww
+  display_name: Groww App
+  description: >
+    Indian investment platform — stocks, mutual funds, F&O, and related
+    financial services on iOS and Android.
+
+stores:
+  app_store:
+    platform: ios
+    app_id: "1404871703"
+    listing_name: Groww Stocks, Mutual Fund, IPO
+    # Public RSS only — ~500 reviews per country; deduped in fetch_public_reviews.py
+    rss_countries:
+      - in
+      - us
+      - gb
+      - ae
+      - sg
+      - ca
+      - au
+  play_store:
+    platform: android
+    package_name: com.nextbillion.groww
+    listing_name: Groww Stocks, Mutual Fund, IPO
+
+review_window:
+  default_weeks: 12
+  min_weeks: 8
+  max_weeks: 12
+
+# Shared inputs only — all phase outputs live under phases/phase-N/
+paths:
+  raw_exports: data/raw
+
+deliverables:
+  phase_0:
+    dir: phases/phase-0
+    report: phases/phase-0/phase0_report.json
+    fetch_metadata: phases/phase-0/fetch_metadata.json
+    storage_validation: phases/phase-0/storage_validation.json
+  phase_1:
+    dir: phases/phase-1
+    reviews: phases/phase-1/reviews.json
+    pre_check: phases/phase-1/pre_phase1_report.json
+  phase_2:
+    dir: phases/phase-2
+    themes: phases/phase-2/themes.json
+  phase_3:
+    dir: phases/phase-3
+    pulse_md: phases/phase-3/pulse.md
+    pulse_json: phases/phase-3/pulse.json
+  phase_4:
+    dir: phases/phase-4
+    doc_metadata: phases/phase-4/doc_metadata.json
+  phase_5:
+    dir: phases/phase-5
+    run_metadata: phases/phase-5/run.json
+  phase_6:
+    dir: phases/phase-6
+    signoff: phases/phase-6/signoff_report.json
+
+storage:
+  app_store_file: groww_app_store_reviews.csv
+  play_store_file: groww_play_store_reviews.csv
+  validate_script: scripts/validate_raw_exports.py
+
+ingestion:
+  missing_store: warn
+  short_window: warn
+  allow_phase1_dev_without_full_app_store: true
+  filters:
+    min_words: 6              # keep reviews with more than 5 words
+    english_only: true
+    no_emojis: true
+
+theme_clustering:
+  max_reviews: 1000
+  sample_seed: 42
+  max_themes: 5
+  top_pulse_themes: 3
+  groq:
+    model: llama-3.3-70b-versatile
+    batch_size: 40
+    max_requests_per_minute: 3
+    min_seconds_between_requests: 21
+    max_samples_per_theme: 10
+    max_daily_tokens_abort: 80000
+    enabled: true
+
+pulse:
+  max_words: 250
+  theme_count: 3
+  quote_count: 3
+  action_count: 3
+  max_quote_words: 22
+
+publish:
+  doc_title_template: "{display_name} Weekly Pulse — {date}"
+  email_subject_template: "Weekly App Review Pulse — {display_name} — {date}"
+  mcp_server_url: "https://mcp-server-rukhsar.up.railway.app"
+  google_doc_id: ""
+  draft_recipient: ""

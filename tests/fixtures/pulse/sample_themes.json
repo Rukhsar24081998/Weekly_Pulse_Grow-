@@ -1,0 +1,48 @@
+{
+  "product": "Groww App",
+  "source": {
+    "ingest_window": {
+      "start": "2026-03-17",
+      "end": "2026-06-09"
+    }
+  },
+  "sample": {
+    "sampled_from": 10,
+    "sample_size": 10
+  },
+  "top_pulse_themes": [
+    {
+      "theme_id": "performance",
+      "label": "App performance, bugs & crashes",
+      "review_count": 2,
+      "avg_rating": 1.0,
+      "negative_pct": 100.0,
+      "rank": 1,
+      "summary": null,
+      "quote_candidate_ids": ["rev-perf-001"],
+      "sample_review_ids": ["rev-perf-001", "rev-perf-002"]
+    },
+    {
+      "theme_id": "login",
+      "label": "Login, OTP & security",
+      "review_count": 1,
+      "avg_rating": 1.0,
+      "negative_pct": 100.0,
+      "rank": 2,
+      "summary": null,
+      "quote_candidate_ids": ["rev-login-001"],
+      "sample_review_ids": ["rev-login-001"]
+    },
+    {
+      "theme_id": "statements",
+      "label": "Portfolio, statements & reports",
+      "review_count": 1,
+      "avg_rating": 2.0,
+      "negative_pct": 100.0,
+      "rank": 3,
+      "summary": null,
+      "quote_candidate_ids": ["rev-stmt-001"],
+      "sample_review_ids": ["rev-stmt-001"]
+    }
+  ]
+}

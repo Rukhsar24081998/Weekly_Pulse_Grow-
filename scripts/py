@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Run project Python via venv (also works: .venv/bin/python3)
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+PY="$ROOT/.venv/bin/python3"
+if [[ ! -x "$PY" ]]; then
+  echo "ERROR: $PY not found. Run: python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'" >&2
+  exit 1
+fi
+exec "$PY" "$@"

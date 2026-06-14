@@ -1,0 +1,107 @@
+{
+  "product": "Groww App",
+  "review_window_weeks": 12,
+  "window": {"start": "2026-03-17", "end": "2026-06-09"},
+  "reviews": [
+    {
+      "id": "rev-kyc-001",
+      "store": "play_store",
+      "rating": 2,
+      "title": null,
+      "text": "My KYC pending for two weeks now please verify documents",
+      "review_date": "2026-06-01",
+      "locale": "en",
+      "week_bucket": "2026-W23"
+    },
+    {
+      "id": "rev-pay-001",
+      "store": "play_store",
+      "rating": 1,
+      "title": null,
+      "text": "SIP payment failed during auto pay mandate checkout yesterday",
+      "review_date": "2026-06-02",
+      "locale": "en",
+      "week_bucket": "2026-W23"
+    },
+    {
+      "id": "rev-login-001",
+      "store": "play_store",
+      "rating": 1,
+      "title": null,
+      "text": "OTP not received during login attempt yesterday evening hours",
+      "review_date": "2026-06-03",
+      "locale": "en",
+      "week_bucket": "2026-W23"
+    },
+    {
+      "id": "rev-stmt-001",
+      "store": "play_store",
+      "rating": 2,
+      "title": null,
+      "text": "Cannot download tax statement from portfolio reports section today",
+      "review_date": "2026-06-04",
+      "locale": "en",
+      "week_bucket": "2026-W23"
+    },
+    {
+      "id": "rev-with-001",
+      "store": "play_store",
+      "rating": 2,
+      "title": null,
+      "text": "Redemption amount not credited to bank after sell proceeds request",
+      "review_date": "2026-06-05",
+      "locale": "en",
+      "week_bucket": "2026-W23"
+    },
+    {
+      "id": "rev-perf-001",
+      "store": "play_store",
+      "rating": 1,
+      "title": null,
+      "text": "App crashes on launch with bug error stuck force close daily",
+      "review_date": "2026-06-06",
+      "locale": "en",
+      "week_bucket": "2026-W23"
+    },
+    {
+      "id": "rev-perf-002",
+      "store": "play_store",
+      "rating": 1,
+      "title": null,
+      "text": "Very slow lag freeze during trading hours market open session",
+      "review_date": "2026-06-07",
+      "locale": "en",
+      "week_bucket": "2026-W24"
+    },
+    {
+      "id": "rev-disc-001",
+      "store": "play_store",
+      "rating": 2,
+      "title": null,
+      "text": "Options trading charts not working properly during intraday session",
+      "review_date": "2026-06-08",
+      "locale": "en",
+      "week_bucket": "2026-W24"
+    },
+    {
+      "id": "rev-onb-001",
+      "store": "play_store",
+      "rating": 4,
+      "title": null,
+      "text": "Easy to start first SIP during sign up onboarding for new user",
+      "review_date": "2026-06-08",
+      "locale": "en",
+      "week_bucket": "2026-W24"
+    },
+    {
+      "id": "rev-generic-001",
+      "store": "play_store",
+      "rating": 5,
+      "title": null,
+      "text": "Nice colour scheme on the home screen layout design today morning",
+      "review_date": "2026-06-08",
+      "locale": "en",
+      "week_bucket": "2026-W24"
+    }
+  ]
+}
