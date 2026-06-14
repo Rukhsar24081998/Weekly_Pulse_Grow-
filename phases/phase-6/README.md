@@ -33,4 +33,4 @@ python scripts/phase6_signoff.py
 2. **Actions** tab → enable workflows
 3. **Weekly Pulse** → Run workflow (manual test) or wait for Monday schedule
 
-← [Phase 5](../phase-5/README.md)
+→ [Phase 7](../phase-7/README.md) — public API + Vercel frontend

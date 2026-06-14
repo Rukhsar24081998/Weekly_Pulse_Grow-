@@ -1,6 +1,6 @@
 # Weekly App Review Pulse — Phase-Wise Implementation Plan
 
-**Document version:** 2.1  
+**Document version:** 2.2  
 **Reference:** [ProblemStatement.md](./ProblemStatement.md) · [architecture.md](./architecture.md)  
 **Evaluation:** Each phase has an `eval.md` with tests and exit criteria under [phases/](./phases/)  
 **Repo:** [Weekly_Pulse_Grow-](https://github.com/Rukhsar24081998/Weekly_Pulse_Grow-)
@@ -9,7 +9,7 @@
 
 ## Overview
 
-This plan breaks the Weekly App Review Pulse into seven sequential phases. Each phase produces verifiable outcomes before the next begins. Phases 0–3 build the **offline analysis pipeline**; Phases 4–5 add **MCP-based publishing**; Phase 6 proves **success criteria and reproducibility**.
+This plan breaks the Weekly App Review Pulse into eight sequential phases. Each phase produces verifiable outcomes before the next begins. Phases 0–3 build the **offline analysis pipeline**; Phases 4–5 add **MCP-based publishing**; Phase 6 proves **success criteria and reproducibility**; Phase 7 adds a **public read-only API and frontend**.
 
 | Phase | Name | Duration (est.) | Depends on | Primary outcome |
 |-------|------|-----------------|------------|-----------------|
@@ -20,6 +20,7 @@ This plan breaks the Weekly App Review Pulse into seven sequential phases. Each 
 | 4 | Google Docs via MCP | 1–2 days | Phase 3 | Pulse published to Google Doc |
 | 5 | Gmail Draft & E2E Orchestration | 1–2 days | Phase 4 | Draft email + full workflow |
 | 6 | Validation & Hardening | 2–3 days | Phase 5 | Teammate-ready, criteria met |
+| 7 | Public API + Frontend | 1–2 days | Phase 6 | Railway API, Vercel dashboard, artifact sync |
 
 **Total:** ~2–3 weeks for a single developer. Phases 4–5 require MCP OAuth to be working (established in Phase 0).
 
@@ -36,8 +37,11 @@ This plan breaks the Weekly App Review Pulse into seven sequential phases. Each 
 | 4 | **Complete** | `src/publish/` HTTP MCP client, `prompts/publish-doc.md` |
 | 5 | **Complete** | `src/publish/draft_run.py`, `e2e_run.py`, `prompts/weekly-pulse-agent.md` |
 | 6 | **Complete** (automated) | `.github/workflows/`, `scripts/phase6_signoff.py`, golden schema tests |
+| 7 | **Complete** | `src/api/`, `frontend/`, `scripts/sync_public_api.py`, [public-deployment.md](./public-deployment.md) |
 
 **MCP publish:** Railway HTTP server ([mcp-server-rukhsar.up.railway.app](https://mcp-server-rukhsar.up.railway.app)) — not Google SDK in `src/`.  
+**Public site:** [weekly-pulse-grow.vercel.app](https://weekly-pulse-grow.vercel.app) → Railway pulse-api ([weeklypulsegrow-production.up.railway.app](https://weeklypulsegrow-production.up.railway.app)).  
+**Artifact sync:** GitHub Actions `POST /api/sync/artifacts` after each weekly run — no Railway volume required.  
 **iOS data:** Public RSS multi-country fetch (IN, US, GB, AE, SG, CA, AU); full 12-week iOS still needs App Store Connect export.  
 **Manual sign-off pending:** Teammate reproducibility test (P6-T-12) — optional for LIP demo.
 
@@ -637,11 +641,12 @@ LIP 4 is complete when someone else can run it — not when only the original de
 
 - **CI** (`.github/workflows/ci.yml`): `pytest` on every push/PR to `main`.
 - **Weekly Pulse** (`.github/workflows/weekly-pulse.yml`): cron **Monday 09:00 IST** — fetch → ingest → themes → pulse → validate → MCP publish → sign-off.
-- Repository secrets: `GROQ_API_KEY`, `MCP_SERVER_URL`, `PUBLISH_GOOGLE_DOC_ID`, `DRAFT_RECIPIENT`.
+- Repository secrets: `GROQ_API_KEY`, `MCP_SERVER_URL`, `PUBLISH_GOOGLE_DOC_ID`, `DRAFT_RECIPIENT`, `PUBLIC_PULSE_API_URL`, `SYNC_SECRET`.
 - Operator guide: [github-actions.md](./github-actions.md).
 - Artifacts uploaded for 30 days (pulse, run metadata, sign-off report).
+- After publish, syncs phase artifacts to Railway pulse-api (Phase 7).
 
-**Implemented:** `scripts/phase6_signoff.py`, `tests/fixtures/expected-pulse-schema.json`, `tests/test_phase6_signoff.py` (66 tests total).
+**Implemented:** `scripts/phase6_signoff.py`, `tests/fixtures/expected-pulse-schema.json`, `tests/test_phase6_signoff.py`.
 
 ### Inputs
 
@@ -671,13 +676,81 @@ All success criteria verified; teammate reproducibility passed; README complete;
 
 ---
 
+## Phase 7 — Public API + Frontend
+
+**Eval:** [phases/phase-7/eval.md](./phases/phase-7/eval.md)  
+**Folder:** [phases/phase-7/](./phases/phase-7/) — deploy docs; code in `src/api/` + `frontend/`
+
+Deploy guide: [public-deployment.md](./public-deployment.md)
+
+### Purpose
+
+Expose the latest validated pulse to anyone with a URL — without running `python -m src.api` locally. Leadership and cross-functional teammates read the pulse on a public dashboard; the pipeline and MCP publish flow stay unchanged.
+
+### Why this phase matters
+
+Phases 0–6 produce artifacts on disk and publish to Google Workspace. Phase 7 adds a **read-only consumption layer** for stakeholders who will not clone the repo or open Cursor.
+
+### Key activities
+
+#### 7.1 — FastAPI read API (F1) ✅
+
+- `src/api/` — `GET /api/health`, `/api/status`, `/api/pulse/latest`, `/api/themes/latest`
+- Reads existing phase deliverables under `phases/` (same paths as `config/product.yaml`)
+- Run locally: `python -m src.api` (port 8000)
+- Deploy on Railway from repo `Dockerfile` + `railway.toml`
+
+#### 7.2 — Next.js frontend (F2) ✅
+
+- `frontend/` — dashboard (`/`) and pulse page (`/pulse`)
+- Deploy on Vercel; root directory `frontend`
+- Env: `NEXT_PUBLIC_API_URL` → Railway pulse-api base URL
+- Live: [weekly-pulse-grow.vercel.app](https://weekly-pulse-grow.vercel.app)
+
+#### 7.3 — Artifact sync (no Railway volume) ✅
+
+- `POST /api/sync/artifacts` — Bearer auth via `SYNC_SECRET`
+- `scripts/sync_public_api.py` — uploads `phases/` JSON/MD from local or CI
+- Weekly workflow sync step after pipeline when `PUBLIC_PULSE_API_URL` + `SYNC_SECRET` are set
+- **Note:** Railway redeploy clears synced data; re-run sync or wait for next Monday workflow
+
+#### 7.4 — CORS and secrets ✅
+
+| Variable | Where | Purpose |
+|----------|--------|---------|
+| `SYNC_SECRET` | Railway + GitHub (same value) | Protect sync endpoint |
+| `PUBLIC_PULSE_API_URL` | GitHub | Target for weekly sync |
+| `CORS_ORIGINS` | Railway | Vercel URL (browser access) |
+| `NEXT_PUBLIC_API_URL` | Vercel | Frontend → API base URL |
+
+### Inputs
+
+- Validated phase artifacts from Phases 1–5
+- Railway pulse-api service (separate from MCP-SERVER project)
+- Vercel project linked to this repo
+
+### Outputs
+
+- Public API serving latest pulse
+- Public Vercel dashboard
+- Automated weekly sync from GitHub Actions
+
+### Exit criteria
+
+- `/api/pulse/latest` returns validated pulse JSON on Railway
+- Vercel site shows dashboard stats and full pulse page
+- Weekly GitHub Action syncs after pipeline without manual laptop step
+
+---
+
 ## Agent + MCP Runbook (Weekly)
 
 ### Option A — GitHub Actions (automated)
 
-1. Ensure four repository secrets are set (see [github-actions.md](./github-actions.md)).
+1. Ensure repository secrets are set (see [github-actions.md](./github-actions.md)), including `PUBLIC_PULSE_API_URL` and `SYNC_SECRET` for public sync.
 2. **Actions → Weekly Pulse → Run workflow** (manual test) or wait for **Monday 09:00 IST** schedule.
 3. Download artifacts; review Gmail draft manually before sending.
+4. Confirm public site updated: `/api/pulse/latest` on Railway and [weekly-pulse-grow.vercel.app](https://weekly-pulse-grow.vercel.app).
 
 ### Option B — Local CLI
 
@@ -718,8 +791,9 @@ flowchart LR
     P4[Phase 4 Docs MCP]
     P5[Phase 5 Gmail MCP]
     P6[Phase 6 Validation]
+    P7[Phase 7 Public UI]
 
-    P0 --> P1 --> P2 --> P3 --> P4 --> P5 --> P6
+    P0 --> P1 --> P2 --> P3 --> P4 --> P5 --> P6 --> P7
 ```
 
 ---
@@ -736,12 +810,16 @@ flowchart LR
 | Gmail draft (via MCP) | 5 | Operator |
 | README + tests + sign-off | 6 | Teammates, reviewers |
 | GitHub Actions CI + weekly scheduler | 6 | Automated weekly runs |
+| FastAPI read API | 7 | Frontend, public consumers |
+| Next.js dashboard | 7 | Leadership, cross-functional |
+| Artifact sync to Railway | 7 | Public site weekly updates |
 
 ---
 
 ## Cross-References
 
 - Architecture: [architecture.md](./architecture.md)
+- Public deployment: [public-deployment.md](./public-deployment.md)
 - Decisions: [decision.md](./decision.md)
 - GitHub Actions: [github-actions.md](./github-actions.md)
 - MCP integration: [mcp-server-integration.md](./mcp-server-integration.md)

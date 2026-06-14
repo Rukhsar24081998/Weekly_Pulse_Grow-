@@ -14,9 +14,11 @@ Shared **inputs** only (raw store CSV exports) live in `data/raw/`.
 | 4 | [phase-4/](phase-4/) | `doc_metadata.json` |
 | 5 | [phase-5/](phase-5/) | `run.json` |
 | 6 | [phase-6/](phase-6/) | `signoff_report.json` |
+| 7 | [phase-7/](phase-7/) | Deploy docs only — code in `src/api/`, `frontend/` (see [README](phase-7/README.md)) |
 
-Paths are defined in [config/product.yaml](../config/product.yaml) under `deliverables`.  
-Code resolves them via [src/paths.py](../src/paths.py).
+Paths for phases 0–6 are defined in [config/product.yaml](../config/product.yaml) under `deliverables`.  
+Phase 7 does not add new pipeline JSON artifacts; it publishes existing artifacts via Railway + Vercel.  
+Code resolves phase 0–6 paths via [src/paths.py](../src/paths.py).
 
 ## Eval criteria
 
@@ -29,6 +31,7 @@ Code resolves them via [src/paths.py](../src/paths.py).
 | 4 | [eval.md](../Docs/phases/phase-4/eval.md) |
 | 5 | [eval.md](../Docs/phases/phase-5/eval.md) |
 | 6 | [eval.md](../Docs/phases/phase-6/eval.md) |
+| 7 | [eval.md](../Docs/phases/phase-7/eval.md) |
 
 **Rule:** Do not start phase N+1 until phase N passes all exit criteria in its eval.
 
