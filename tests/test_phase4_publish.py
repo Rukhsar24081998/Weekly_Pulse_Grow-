@@ -91,8 +91,9 @@ class TestPublishPipeline:
 
     def test_build_doc_content_includes_title(self):
         content = build_doc_content("Groww App Weekly Pulse — 2026-06-13", _sample_pulse())
-        assert content.startswith("# Groww App Weekly Pulse — 2026-06-13")
+        assert "Groww App Weekly Pulse — 2026-06-13" in content
         assert "Sample body." in content
+        assert "Published" in content
 
     @patch.object(McpHttpClient, "list_tools")
     @patch.object(McpHttpClient, "append_to_doc")

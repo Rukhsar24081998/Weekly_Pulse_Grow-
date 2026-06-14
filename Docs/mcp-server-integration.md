@@ -61,7 +61,7 @@ The CLI:
 PUBLISH_GOOGLE_DOC_ID=DOC_ID
 ```
 
-Each weekly run appends a new dated section via `append_to_doc`.
+Each weekly run appends a new dated section via `append_to_doc`. The server may prepend a timestamp line (e.g. `[2026-06-14 11:04:17]`); LIP-4-4 sends a formatted section with its own title and separator. To remove the server timestamp, update `append_to_doc` in [MCP-SERVER](https://github.com/Rukhsar24081998/MCP-SERVER).
 
 ---
 

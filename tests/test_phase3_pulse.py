@@ -103,7 +103,8 @@ class TestPulseGenerator:
             assert len(pulse.action_ideas) == 3
             assert "## Top themes" in pulse.markdown
             assert "## User quotes" in pulse.markdown
-            assert "## Action ideas" in pulse.markdown
+            assert "## Recommended actions" in pulse.markdown
+            assert "Play Store" in pulse.markdown or "App Store" in pulse.markdown
 
     def test_word_count_under_limit(self):
         with tempfile.TemporaryDirectory() as tmp:

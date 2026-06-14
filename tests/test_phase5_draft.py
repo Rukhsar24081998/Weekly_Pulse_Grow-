@@ -47,8 +47,10 @@ class TestEmailBuilder:
 
     def test_body_includes_pulse_and_doc_link(self):
         body = build_email_body(_sample_pulse(), doc_url="https://docs.google.com/document/d/abc/edit")
-        assert "Google Doc:" in body
-        assert "Sample body." in body
+        assert "Formatted report:" in body
+        assert "TOP THEMES" in body
+        assert "Sample body." not in body
+        assert "WEEKLY APP REVIEW PULSE" in body
 
 
 class TestDraftPipeline:

@@ -12,6 +12,7 @@ from src.publish.exceptions import McpError, PublishError, PublishValidationErro
 from src.publish.mcp_client import McpHttpClient, google_doc_url
 from src.publish.models import DocPublishResult
 from src.publish.preflight import run_preflight
+from src.publish.formatting import build_doc_entry
 from src.pulse.models import PulseDocument
 
 
@@ -23,7 +24,7 @@ def build_doc_title(config: PublishConfig, pulse: PulseDocument) -> str:
 
 
 def build_doc_content(title: str, pulse: PulseDocument) -> str:
-    return f"# {title}\n\n{pulse.markdown.strip()}\n"
+    return build_doc_entry(title, pulse)
 
 
 def _extract_doc_id(result: dict) -> str | None:

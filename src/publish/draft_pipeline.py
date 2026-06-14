@@ -15,6 +15,7 @@ from src.publish.mcp_client import McpHttpClient
 from src.publish.models import DraftPublishResult
 from src.publish.preflight import run_preflight
 from src.publish.run_metadata import write_run_metadata
+from src.publish.formatting import build_plain_email_body
 from src.pulse.models import PulseDocument
 
 _EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
@@ -28,24 +29,7 @@ def build_email_subject(config: PublishConfig, pulse: PulseDocument) -> str:
 
 
 def build_email_body(pulse: PulseDocument, *, doc_url: str | None = None) -> str:
-    lines = [
-        f"Weekly App Review Pulse — {pulse.product}",
-        f"Week ending: {pulse.week_ending}",
-        f"Review window: {pulse.window_start} to {pulse.window_end} "
-        f"({pulse.review_window_weeks} weeks)",
-        "",
-    ]
-    if doc_url:
-        lines.extend(
-            [
-                f"Google Doc: {doc_url}",
-                "",
-                "Full pulse text is below. Review the draft before sending.",
-                "",
-            ]
-        )
-    lines.extend(["---", "", pulse.markdown.strip(), ""])
-    return "\n".join(lines)
+    return build_plain_email_body(pulse, doc_url=doc_url)
 
 
 def _resolve_recipient(config: PublishConfig, recipient: str | None) -> str:

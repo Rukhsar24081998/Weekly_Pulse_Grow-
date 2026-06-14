@@ -6,6 +6,12 @@ from src.guardrails.redact import redact_text
 from src.guardrails.validate import count_words
 from src.ingest.models import ReviewRecord
 from src.pulse.config_loader import PulseConfig
+from src.pulse.formatting import (
+    format_avg_rating,
+    format_display_date,
+    format_sentiment,
+    format_store,
+)
 from src.pulse.models import PulseAction, PulseDocument, PulseQuote, PulseTheme
 
 ACTION_TEMPLATES: dict[str, tuple[str, str]] = {
@@ -52,17 +58,15 @@ def _truncate_words(text: str, max_words: int) -> str:
 
 
 def _default_summary(theme: dict) -> str:
-    label = theme["label"]
-    count = theme["review_count"]
-    avg = theme["avg_rating"]
-    negative = theme.get("negative_pct", 0)
+    avg = float(theme["avg_rating"])
+    negative = float(theme.get("negative_pct", 0))
     if negative >= 60:
-        tone = "Strong negative feedback on"
-    elif avg <= 2.5:
-        tone = "Users struggle with"
-    else:
-        tone = "Mixed feedback on"
-    return f"{tone} {label.lower()} ({count} reviews, avg {avg}★)."
+        return "Strong negative sentiment — repeated failures reported in this area."
+    if avg <= 2.5:
+        return "Low ratings — reliability and correctness concerns dominate feedback."
+    if avg >= 4.0:
+        return "Mostly positive — isolated issues still worth tracking."
+    return "Mixed sentiment — recurring friction across user sessions."
 
 
 def _theme_summary(theme: dict) -> str:
@@ -117,28 +121,52 @@ def _action_for_theme(theme: dict) -> PulseAction:
 
 
 def _render_markdown(pulse: PulseDocument) -> str:
+    window = (
+        f"{format_display_date(pulse.window_start)} – "
+        f"{format_display_date(pulse.window_end)}"
+    )
     lines = [
         f"# {pulse.product} — Weekly Pulse",
         "",
-        f"**Week ending:** {pulse.week_ending} · "
-        f"**Window:** {pulse.window_start} to {pulse.window_end} "
-        f"({pulse.review_window_weeks} weeks) · "
-        f"**Reviews analyzed:** {pulse.sample_size} (sample of {pulse.total_reviews})",
+        (
+            f"**Week ending {format_display_date(pulse.week_ending)}** · "
+            f"{pulse.review_window_weeks}-week window ({window}) · "
+            f"**{pulse.sample_size:,}** reviews sampled from **{pulse.total_reviews:,}**"
+        ),
         "",
         "## Top themes",
         "",
     ]
 
     for theme in pulse.top_themes:
-        lines.append(f"- **{theme.label}** — {theme.summary}")
+        sentiment = format_sentiment(theme.avg_rating)
+        lines.extend(
+            [
+                f"**{theme.rank}. {theme.label}**",
+                (
+                    f"{theme.review_count:,} reviews · "
+                    f"{format_avg_rating(theme.avg_rating)} avg · {sentiment}"
+                ),
+                theme.summary,
+                "",
+            ]
+        )
 
-    lines.extend(["", "## User quotes", ""])
+    lines.extend(["## User quotes", ""])
     for quote in pulse.quotes:
-        lines.append(f'- *{quote.rating}★ ({quote.store})*: "{quote.text}"')
+        lines.extend(
+            [
+                f"**{quote.rating}★ · {format_store(quote.store)}**",
+                f"> {quote.text}",
+                "",
+            ]
+        )
 
-    lines.extend(["", "## Action ideas", ""])
-    for action in pulse.action_ideas:
-        lines.append(f"- **{action.action}** — {action.rationale}")
+    lines.extend(["## Recommended actions", ""])
+    for index, action in enumerate(pulse.action_ideas, start=1):
+        lines.append(
+            f"{index}. **{action.action}** — {action.rationale}"
+        )
 
     return "\n".join(lines) + "\n"
 
