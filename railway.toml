@@ -1,0 +1,11 @@
+# Pulse API service — deploy from this repo (separate from MCP-SERVER project).
+# Docs: Docs/public-deployment.md
+
+[build]
+builder = "dockerfile"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+healthcheckPath = "/api/health"
+healthcheckTimeout = 120
+restartPolicyType = "on_failure"

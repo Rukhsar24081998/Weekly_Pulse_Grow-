@@ -300,3 +300,5 @@ npm run dev
 Open http://localhost:3000 (dashboard) and http://localhost:3000/pulse (full pulse).
 
 Does **not** change CLI, GitHub Actions, or MCP publish.
+
+**Public deploy (Vercel + Railway):** [Docs/public-deployment.md](Docs/public-deployment.md)
