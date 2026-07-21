@@ -72,6 +72,7 @@ jobs:
         run: python scripts/phase6_signoff.py --require-artifacts
 
       - name: Sync pulse data to public API (Railway)
+        continue-on-error: true
         env:
           PUBLIC_PULSE_API_URL: ${{ secrets.PUBLIC_PULSE_API_URL }}
           SYNC_SECRET: ${{ secrets.SYNC_SECRET }}
