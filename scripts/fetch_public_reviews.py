@@ -248,6 +248,16 @@ def fetch_app_store_reviews(
 
 
 def write_csv(path: Path, rows: list[dict], fieldnames: list[str]) -> None:
+    """Write a usable export, or remove it when the upstream returned no rows.
+
+    A header-only file looks present to ingestion but cannot contain any valid
+    reviews. Leaving the path absent lets the configured missing-store policy
+    warn and continue with the other store instead.
+    """
+    if not rows:
+        path.unlink(missing_ok=True)
+        return
+
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="", encoding="utf-8") as fh:
         writer = csv.DictWriter(fh, fieldnames=fieldnames)
@@ -309,6 +319,11 @@ def main() -> int:
         f"(raw {app_stats['raw_total']}, dupes dropped {app_stats['duplicates_dropped']}), "
         f"span ~{app_span} weeks -> {app_path}"
     )
+    if not app_rows:
+        print(
+            "WARNING: App Store returned no reviews; continuing with Play Store data.",
+            file=sys.stderr,
+        )
 
     meta = {
         "fetched_at": datetime.now(timezone.utc).isoformat(),
