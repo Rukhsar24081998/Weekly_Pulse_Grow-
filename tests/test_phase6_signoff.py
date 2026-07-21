@@ -9,6 +9,7 @@ from pathlib import Path
 
 import pytest
 
+import scripts.phase6_signoff as phase6_signoff
 from src.guardrails.redact import scan_pii_violations
 from src.guardrails.validate import validate_pulse
 from src.pulse.config_loader import PulseConfig
@@ -97,6 +98,45 @@ class TestNoGoogleSdkInSrc:
             text = path.read_text(encoding="utf-8")
             for token in blocked:
                 assert token not in text, f"{token} found in {path}"
+
+
+class TestStoreCoverageAudit:
+    def test_allows_documented_single_store_fallback(self, tmp_path, monkeypatch):
+        reviews_path = tmp_path / "phases" / "phase-1" / "reviews.json"
+        reviews_path.parent.mkdir(parents=True)
+        reviews_path.write_text(
+            json.dumps(
+                {
+                    "stats": {"app_store": 0, "play_store": 100},
+                    "warnings": ["Missing App Store export: data/raw/app.csv"],
+                }
+            ),
+            encoding="utf-8",
+        )
+        monkeypatch.setattr(phase6_signoff, "ROOT", tmp_path)
+
+        passed, evidence = phase6_signoff._audit_both_stores()
+
+        assert passed
+        assert evidence["degraded_single_store"] is True
+
+    def test_rejects_unexplained_single_store_input(self, tmp_path, monkeypatch):
+        reviews_path = tmp_path / "phases" / "phase-1" / "reviews.json"
+        reviews_path.parent.mkdir(parents=True)
+        reviews_path.write_text(
+            json.dumps(
+                {
+                    "stats": {"app_store": 0, "play_store": 100},
+                    "warnings": [],
+                }
+            ),
+            encoding="utf-8",
+        )
+        monkeypatch.setattr(phase6_signoff, "ROOT", tmp_path)
+
+        passed, _ = phase6_signoff._audit_both_stores()
+
+        assert not passed
 
 
 class TestPhase6SignoffScript:
