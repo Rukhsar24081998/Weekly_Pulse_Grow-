@@ -301,4 +301,4 @@ Open http://localhost:3000 (dashboard) and http://localhost:3000/pulse (full pul
 
 Does **not** change CLI, GitHub Actions, or MCP publish.
 
-**Public deploy (Vercel + Railway):** [Docs/public-deployment.md](Docs/public-deployment.md)
+**Public deploy (Vercel + Render):** [Docs/public-deployment.md](Docs/public-deployment.md)

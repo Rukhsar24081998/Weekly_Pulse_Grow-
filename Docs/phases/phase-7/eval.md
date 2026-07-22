@@ -7,7 +7,7 @@
 
 ## Scope
 
-Read-only public access to the latest validated pulse: FastAPI on Railway, Next.js on Vercel, artifact sync from GitHub Actions (no Railway volume required).
+Read-only public access to the latest validated pulse: FastAPI on Render, Next.js on Vercel, artifact sync from GitHub Actions (no persistent volume required).
 
 ---
 
@@ -17,12 +17,12 @@ Read-only public access to the latest validated pulse: FastAPI on Railway, Next.
 |----|------|-----------------|-------|
 | P7-T-01 | API health | `curl …/api/health` | ✅ |
 | P7-T-02 | Pulse latest | `curl …/api/pulse/latest` returns JSON after sync | ✅ |
-| P7-T-03 | Sync auth | Wrong Bearer → 403; missing Railway `SYNC_SECRET` → 503 | ✅ |
+| P7-T-03 | Sync auth | Wrong Bearer → 403; missing Render `SYNC_SECRET` → 503 | ✅ |
 | P7-T-04 | API tests | `pytest tests/test_api.py tests/test_api_sync.py` | ✅ |
 | P7-T-05 | Frontend build | `cd frontend && npm run build` | ✅ |
 | P7-T-06 | Vercel dashboard | [weekly-pulse-grow.vercel.app](https://weekly-pulse-grow.vercel.app) shows pulse stats | ✅ |
 | P7-T-07 | Weekly sync | GitHub Action sync step after pipeline (secrets set) | ✅ |
-| P7-T-08 | CORS | `CORS_ORIGINS` includes Vercel URL on Railway | ✅ |
+| P7-T-08 | CORS | `CORS_ORIGINS` includes Vercel URL on Render | ✅ |
 
 ---
 

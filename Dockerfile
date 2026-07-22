@@ -1,3 +1,6 @@
+# Pulse API service — deploy from this repo (Render uses the same image).
+# Docs: Docs/public-deployment.md
+
 FROM python:3.11-slim
 
 WORKDIR /app

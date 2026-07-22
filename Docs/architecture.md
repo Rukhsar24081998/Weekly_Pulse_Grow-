@@ -75,7 +75,7 @@ The workflow is **semi-automated** with optional full automation via GitHub Acti
 
 1. **Batch phase (local or CI):** Operator or GitHub Actions runs the Python pipeline to produce validated artifacts on disk.
 2. **Publish phase (MCP):** `src.publish.e2e_run` publishes artifacts to Google via Railway MCP HTTP server (or agent in Cursor).
-3. **Public sync phase (CI):** GitHub Actions POSTs phase artifacts to Railway pulse-api (`scripts/sync_public_api.py`).
+3. **Public sync phase (CI):** GitHub Actions POSTs phase artifacts to Render pulse-api (`scripts/sync_public_api.py`).
 4. **Human gate:** Gmail draft is created but **not sent** — operator reviews before forwarding.
 
 This split is intentional: analysis is testable and repeatable; Google integration stays inside MCP where OAuth and API scope are managed.
@@ -319,10 +319,10 @@ LIP-4-4/
 │   └── api/                    # Phase 7 (FastAPI read + sync)
 ├── frontend/                   # Phase 7 (Next.js dashboard)
 ├── scripts/
-│   ├── sync_public_api.py      # Push phases/ to Railway pulse-api
+│   ├── sync_public_api.py      # Push phases/ to Render pulse-api
 │   └── phase6_signoff.py
-├── Dockerfile                  # Railway pulse-api image
-├── railway.toml
+├── Dockerfile                  # Render pulse-api image
+├── render.yaml
 ├── prompts/
 │   ├── weekly-pulse-agent.md
 │   ├── publish-doc.md
@@ -718,7 +718,7 @@ No review text or PII in run logs — IDs and counts only. This supports weekly 
 | 4 | Agent + MCP Google Docs flow |
 | 5 | Agent + MCP Gmail draft + E2E orchestration |
 | 6 | Golden tests, README, success-criteria validation, GitHub Actions |
-| 7 | FastAPI read API, Next.js frontend, Railway + Vercel deploy, artifact sync |
+| 7 | FastAPI read API, Next.js frontend, Render + Vercel deploy, artifact sync |
 
 See [phase-wise-implementationplan.md](./phase-wise-implementationplan.md) for phase activities and [phases/](./phases/) for per-phase eval criteria.
 
@@ -848,11 +848,11 @@ flowchart LR
 
     subgraph Public["Public services"]
         VER[Vercel frontend]
-        API[Railway pulse-api]
+        API[Render pulse-api]
     end
 
     subgraph Existing["Unchanged"]
-        MCP[Railway MCP-SERVER]
+        MCP[MCP-SERVER]
         GDOC[Google Doc + Gmail draft]
     end
 
@@ -868,14 +868,14 @@ flowchart LR
 
 | Service | Platform | Role |
 |---------|----------|------|
-| **pulse-api** | Railway (this repo) | FastAPI; serves latest pulse from synced artifacts |
+| **pulse-api** | Render (this repo) | FastAPI; serves latest pulse from synced artifacts |
 | **frontend** | Vercel (`frontend/`) | Next.js dashboard + pulse page |
-| **MCP-SERVER** | Railway (separate repo) | Google Doc + Gmail draft only |
+| **MCP-SERVER** | Separate MCP deploy | Google Doc + Gmail draft only |
 
 **Live URLs (Groww):**
 
 - Frontend: [weekly-pulse-grow.vercel.app](https://weekly-pulse-grow.vercel.app)
-- API: [weeklypulsegrow-production.up.railway.app](https://weeklypulsegrow-production.up.railway.app)
+- API: your Render URL after deploy (e.g. `https://pulse-api-xxxx.onrender.com`)
 
 ### 17.2 API surface
 
@@ -891,15 +891,15 @@ Application code reads the same deliverable paths as the offline pipeline (`conf
 
 ### 17.3 Artifact sync (no persistent volume)
 
-Railway hobby plans often lack persistent volumes. Instead:
+Free Render instances do not need a disk volume. Instead:
 
 1. GitHub Actions runs the full weekly pipeline.
 2. `scripts/sync_public_api.py` POSTs `pulse_json`, `pulse_md`, `reviews`, `themes`, and publish metadata to pulse-api.
 3. pulse-api writes files under `/app/phases/` in the container filesystem.
 
-**Operational note:** A Railway **redeploy clears synced data**. Recovery: re-run sync locally, trigger Weekly Pulse workflow, or wait for the next scheduled Monday run.
+**Operational note:** A Render **redeploy** (and free-tier **spin-down**) clears synced data. Recovery: re-run sync locally, trigger Weekly Pulse workflow, or wait for the next scheduled Monday run.
 
-Secrets: `SYNC_SECRET` (Railway + GitHub, must match), `PUBLIC_PULSE_API_URL` (GitHub), `CORS_ORIGINS` (Railway — Vercel URL), `NEXT_PUBLIC_API_URL` (Vercel).
+Secrets: `SYNC_SECRET` (Render + GitHub, must match), `PUBLIC_PULSE_API_URL` (GitHub), `CORS_ORIGINS` (Render — Vercel URL), `NEXT_PUBLIC_API_URL` (Vercel).
 
 Deploy guide: [public-deployment.md](./public-deployment.md).
 

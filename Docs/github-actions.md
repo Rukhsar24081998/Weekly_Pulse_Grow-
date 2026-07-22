@@ -21,13 +21,13 @@ Use these **exact names** (case-sensitive):
 | `PUBLISH_GOOGLE_DOC_ID` | Google Doc for append | your doc ID from the URL |
 | `DRAFT_RECIPIENT` | Gmail draft recipient |
 
-### Public UI sync (Railway pulse-api)
+### Public UI sync (Render pulse-api)
 
 | Secret | Purpose |
 |--------|---------|
-| `PUBLIC_PULSE_API_URL` | Railway pulse-api base URL |
-| `SYNC_SECRET` | Same as `SYNC_SECRET` on Railway — pushes pulse data after weekly run | `you@example.com` |
-| `GROQ_API_KEY` | Optional Groq themes (manual run with `use_groq=true`) | from console.groq.com |
+| `PUBLIC_PULSE_API_URL` | Render pulse-api base URL (e.g. `https://pulse-api-xxxx.onrender.com`) |
+| `SYNC_SECRET` | Same as `SYNC_SECRET` on Render — pushes pulse data after weekly run |
+| `GROQ_API_KEY` | Optional Groq themes (manual run with `use_groq=true`) |
 
 Do **not** use placeholder names like `SECA` — the workflow reads the names above exactly.
 

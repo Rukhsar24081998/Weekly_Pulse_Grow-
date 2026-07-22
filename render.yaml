@@ -1,0 +1,20 @@
+# Pulse API — Render Blueprint (replaces Railway).
+# Docs: Docs/public-deployment.md
+#
+# In Render dashboard: New → Blueprint → connect this repo.
+# Or: New → Web Service → Docker → this repo.
+
+services:
+  - type: web
+    name: pulse-api
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    envVars:
+      - key: SYNC_SECRET
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false

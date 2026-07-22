@@ -1,53 +1,71 @@
-# Public deployment — Railway API + Vercel frontend
+# Public deployment — Render API + Vercel frontend
 
 Deploy so anyone can open a URL without you running `python -m src.api` locally.
 
 | Service | Platform | URL example |
 |---------|----------|-------------|
-| **Pulse API** | Railway (this repo) | `https://pulse-api-xxx.up.railway.app` |
-| **Frontend** | Vercel (`frontend/`) | `https://groww-pulse.vercel.app` |
-| **MCP publish** | Railway (MCP-SERVER repo) | Already deployed — unchanged |
+| **Pulse API** | Render (this repo) | `https://pulse-api-xxxx.onrender.com` |
+| **Frontend** | Vercel (`frontend/`) | `https://weekly-pulse-grow.vercel.app` |
+| **MCP publish** | Separate MCP-SERVER deploy | Unchanged — set `MCP_SERVER_URL` |
+
+### Is Render free?
+
+**Yes.** Free web services are **$0/month** (no credit card required to start). Limits:
+
+| Limit | What it means for pulse-api |
+|-------|-----------------------------|
+| Spins down after **15 min** idle | First request after sleep can take ~1 minute |
+| **750** free instance hours / month | Enough for one always-warm service if you ping it |
+| No persistent disk on free | Redeploy **or** spin-down clears synced `phases/` files |
+
+**Practical tip:** After deploy, run a sync (Step 4). If the site shows empty data after idle time, re-run sync or trigger **Weekly Pulse**. For always-on (no cold starts / less data loss), upgrade the service to **Starter (~$7/mo)**.
 
 ---
 
-## Architecture (no Railway volume required)
+## Architecture (no persistent volume required)
 
 ```
-Browser → Vercel → Railway Pulse API
+Browser → Vercel → Render Pulse API
                          ↑
               GitHub Actions weekly job
               (runs pipeline + POST sync)
 ```
 
-GitHub Actions already runs your pipeline every Monday. After each run it **uploads** pulse data to Railway — you do **not** need Railway Volumes (often unavailable on free/hobby plans).
+GitHub Actions already runs your pipeline every Monday. After each run it **uploads** pulse data to Render — you do **not** need a disk volume.
 
 ---
 
-## Step 1 — Railway: create Pulse API service
+## Step 1 — Render: create Pulse API service
 
-1. [Railway](https://railway.com) → **New project** → **Deploy from GitHub repo**
-2. Select **`Weekly_Pulse_Grow-`**
-3. Name the service **`pulse-api`** (separate from MCP-SERVER)
+1. [Render](https://render.com) → **New** → **Blueprint** (uses `render.yaml`)  
+   **or** **New** → **Web Service** → connect **`Weekly_Pulse_Grow-`**
+2. If manual Web Service:
+   - **Runtime:** Docker
+   - **Dockerfile path:** `./Dockerfile`
+   - **Instance type:** Free
+   - **Health check path:** `/api/health`
+3. Name the service **`pulse-api`**
 
 Wait for deploy. Copy the public URL, e.g.  
-`https://pulse-api-production-xxxx.up.railway.app`
+`https://pulse-api-xxxx.onrender.com`
 
-Test: `https://YOUR-URL/api/health` → `"status":"ok"`
+Test: `https://YOUR-URL/api/health` → `"status":"ok"`  
+(First hit on free tier may take ~1 minute while the service wakes up.)
 
 ---
 
-## Step 2 — Railway: environment variables
+## Step 2 — Render: environment variables
 
-**pulse-api** → **Variables** → add:
+**pulse-api** → **Environment** → add:
 
 | Variable | Value |
 |----------|--------|
 | `SYNC_SECRET` | Pick a long random password (you choose once) |
-| `CORS_ORIGINS` | Add after Vercel deploy (Step 5), e.g. `https://your-app.vercel.app` |
+| `CORS_ORIGINS` | Add after Vercel is set (Step 5), e.g. `https://weekly-pulse-grow.vercel.app` |
 
-`SYNC_SECRET` protects the sync endpoint — only GitHub Actions can push data.
+`SYNC_SECRET` protects the sync endpoint — only GitHub Actions (or you) can push data.
 
-**Skip Railway Volumes** — not needed with this setup.
+`PORT` is set automatically by Render — do not override.
 
 Redeploy after adding variables.
 
@@ -59,8 +77,8 @@ Redeploy after adding variables.
 
 | Secret | Value |
 |--------|--------|
-| `PUBLIC_PULSE_API_URL` | Your Railway pulse-api URL (no trailing slash) |
-| `SYNC_SECRET` | **Same value** as on Railway |
+| `PUBLIC_PULSE_API_URL` | Your Render pulse-api URL (no trailing slash) |
+| `SYNC_SECRET` | **Same value** as on Render |
 
 ---
 
@@ -69,42 +87,44 @@ Redeploy after adding variables.
 Run locally after a successful pipeline on your Mac:
 
 ```bash
-cd /Users/rukhsarkhan/LIP-4-4
+cd /Users/rukhsarkhan/Projects/Weekly_Pulse_Grow-
 source .venv/bin/activate
 
 # Ensure you have fresh pulse files (or run full pipeline first)
-export PUBLIC_PULSE_API_URL=https://YOUR-PULSE-API.up.railway.app
-export SYNC_SECRET=your-same-secret-as-railway
+export PUBLIC_PULSE_API_URL=https://YOUR-PULSE-API.onrender.com
+export SYNC_SECRET=your-same-secret-as-render
 
 python scripts/sync_public_api.py
 ```
 
 Or trigger **Actions → Weekly Pulse → Run workflow** — it will sync automatically if both secrets are set.
 
-Verify: `https://YOUR-PULSE-API.up.railway.app/api/pulse/latest` → JSON (not 404)
+Verify: `https://YOUR-PULSE-API.onrender.com/api/pulse/latest` → JSON (not 404)
 
 ---
 
 ## Step 5 — Vercel: deploy frontend
 
-1. [Vercel](https://vercel.com) → **Add New Project** → import **`Weekly_Pulse_Grow-`**
+1. [Vercel](https://vercel.com) → project for **`Weekly_Pulse_Grow-`** (or import fresh)
 2. **Root Directory:** `frontend`
 3. Environment variable:
 
 | Name | Value |
 |------|--------|
-| `NEXT_PUBLIC_API_URL` | `https://YOUR-PULSE-API.up.railway.app` |
+| `NEXT_PUBLIC_API_URL` | `https://YOUR-PULSE-API.onrender.com` |
 
-4. Deploy → copy Vercel URL
+4. Redeploy → open the Vercel URL
+
+If the site already exists at [weekly-pulse-grow.vercel.app](https://weekly-pulse-grow.vercel.app), only update `NEXT_PUBLIC_API_URL` and redeploy.
 
 ---
 
-## Step 6 — CORS on Railway
+## Step 6 — CORS on Render
 
-**pulse-api** → **Variables**:
+**pulse-api** → **Environment**:
 
 ```
-CORS_ORIGINS=https://your-vercel-url.vercel.app
+CORS_ORIGINS=https://weekly-pulse-grow.vercel.app
 ```
 
 Redeploy. Open your Vercel site — dashboard should show pulse data.
@@ -116,7 +136,7 @@ Redeploy. Open your Vercel site — dashboard should show pulse data.
 Every **Monday**, GitHub Actions:
 
 1. Runs fetch → ingest → themes → pulse → publish  
-2. **Syncs** results to Railway (`sync_public_api.py`)  
+2. **Syncs** results to Render (`sync_public_api.py`)  
 3. Public site stays updated — no laptop required
 
 Manual refresh anytime: **Actions → Weekly Pulse → Run workflow**
@@ -125,12 +145,13 @@ Manual refresh anytime: **Actions → Weekly Pulse → Run workflow**
 
 ## Checklist
 
-- [ ] Railway **pulse-api** live (`/api/health`)
-- [ ] `SYNC_SECRET` on Railway + GitHub (same value)
-- [ ] `PUBLIC_PULSE_API_URL` on GitHub
+- [ ] Render **pulse-api** live (`/api/health`)
+- [ ] `SYNC_SECRET` on Render + GitHub (same value)
+- [ ] `PUBLIC_PULSE_API_URL` on GitHub = Render URL
 - [ ] First sync done (`/api/pulse/latest` works)
-- [ ] Vercel deployed with `NEXT_PUBLIC_API_URL`
-- [ ] `CORS_ORIGINS` on Railway includes Vercel URL
+- [ ] Vercel `NEXT_PUBLIC_API_URL` points at Render
+- [ ] `CORS_ORIGINS` on Render includes Vercel URL
+- [ ] Old Railway pulse-api project deleted / unused
 
 ---
 
@@ -138,14 +159,16 @@ Manual refresh anytime: **Actions → Weekly Pulse → Run workflow**
 
 | Issue | Fix |
 |-------|-----|
-| Can't find Railway Volumes | **Ignore** — use GitHub sync (this guide) |
-| `/api/pulse/latest` 404 | Run `python scripts/sync_public_api.py` locally or trigger Weekly Pulse |
-| Sync failed 401/403 | `SYNC_SECRET` must match on Railway and GitHub / your terminal |
+| First request hangs / 502 | Free tier cold start — wait ~1 min and retry |
+| `/api/pulse/latest` 404 | Run `python scripts/sync_public_api.py` or trigger Weekly Pulse |
+| Empty dashboard after idle | Free spin-down cleared disk — re-sync, or upgrade to Starter |
+| Sync failed 401/403 | `SYNC_SECRET` must match on Render and GitHub / your terminal |
 | Vercel "API not reachable" | Check `NEXT_PUBLIC_API_URL`, redeploy Vercel |
-| CORS error | Add Vercel URL to `CORS_ORIGINS` on Railway |
+| CORS error | Add Vercel URL to `CORS_ORIGINS` on Render |
 
 ---
 
-## Optional: Railway volume or cron
+## Optional: paid instance or keepalive
 
-If your Railway plan supports **Volumes**, you can mount `/app/phases` and use `bash scripts/run_pipeline_public.sh` on a cron instead of GitHub sync. The sync method above is simpler and works on all plans.
+- **Starter (~$7/mo):** service stays up; fewer cold starts; synced files last until the next deploy.
+- **Keepalive:** a cron that hits `/api/health` every ~10 minutes can reduce free-tier sleep (uses free instance hours).

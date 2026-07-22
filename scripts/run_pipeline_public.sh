@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Refresh public pulse data (no MCP publish). Used on Railway cron or manual bootstrap.
+# Refresh public pulse data (no MCP publish). Used for manual bootstrap or host cron.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"

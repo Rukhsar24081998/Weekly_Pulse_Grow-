@@ -20,7 +20,7 @@ This plan breaks the Weekly App Review Pulse into eight sequential phases. Each 
 | 4 | Google Docs via MCP | 1–2 days | Phase 3 | Pulse published to Google Doc |
 | 5 | Gmail Draft & E2E Orchestration | 1–2 days | Phase 4 | Draft email + full workflow |
 | 6 | Validation & Hardening | 2–3 days | Phase 5 | Teammate-ready, criteria met |
-| 7 | Public API + Frontend | 1–2 days | Phase 6 | Railway API, Vercel dashboard, artifact sync |
+| 7 | Public API + Frontend | 1–2 days | Phase 6 | Render API, Vercel dashboard, artifact sync |
 
 **Total:** ~2–3 weeks for a single developer. Phases 4–5 require MCP OAuth to be working (established in Phase 0).
 
@@ -40,8 +40,8 @@ This plan breaks the Weekly App Review Pulse into eight sequential phases. Each 
 | 7 | **Complete** | `src/api/`, `frontend/`, `scripts/sync_public_api.py`, [public-deployment.md](./public-deployment.md) |
 
 **MCP publish:** Railway HTTP server ([mcp-server-rukhsar.up.railway.app](https://mcp-server-rukhsar.up.railway.app)) — not Google SDK in `src/`.  
-**Public site:** [weekly-pulse-grow.vercel.app](https://weekly-pulse-grow.vercel.app) → Railway pulse-api ([weeklypulsegrow-production.up.railway.app](https://weeklypulsegrow-production.up.railway.app)).  
-**Artifact sync:** GitHub Actions `POST /api/sync/artifacts` after each weekly run — no Railway volume required.  
+**Public site:** [weekly-pulse-grow.vercel.app](https://weekly-pulse-grow.vercel.app) → Render pulse-api (see [public-deployment.md](./public-deployment.md)).
+**Artifact sync:** GitHub Actions `POST /api/sync/artifacts` after each weekly run — no persistent volume required.
 **iOS data:** Public RSS multi-country fetch (IN, US, GB, AE, SG, CA, AU); full 12-week iOS still needs App Store Connect export.  
 **Manual sign-off pending:** Teammate reproducibility test (P6-T-12) — optional for LIP demo.
 
@@ -644,7 +644,7 @@ LIP 4 is complete when someone else can run it — not when only the original de
 - Repository secrets: `GROQ_API_KEY`, `MCP_SERVER_URL`, `PUBLISH_GOOGLE_DOC_ID`, `DRAFT_RECIPIENT`, `PUBLIC_PULSE_API_URL`, `SYNC_SECRET`.
 - Operator guide: [github-actions.md](./github-actions.md).
 - Artifacts uploaded for 30 days (pulse, run metadata, sign-off report).
-- After publish, syncs phase artifacts to Railway pulse-api (Phase 7).
+- After publish, syncs phase artifacts to Render pulse-api (Phase 7).
 
 **Implemented:** `scripts/phase6_signoff.py`, `tests/fixtures/expected-pulse-schema.json`, `tests/test_phase6_signoff.py`.
 
@@ -698,35 +698,35 @@ Phases 0–6 produce artifacts on disk and publish to Google Workspace. Phase 7 
 - `src/api/` — `GET /api/health`, `/api/status`, `/api/pulse/latest`, `/api/themes/latest`
 - Reads existing phase deliverables under `phases/` (same paths as `config/product.yaml`)
 - Run locally: `python -m src.api` (port 8000)
-- Deploy on Railway from repo `Dockerfile` + `railway.toml`
+- Deploy on Render from repo `Dockerfile` + `render.yaml`
 
 #### 7.2 — Next.js frontend (F2) ✅
 
 - `frontend/` — dashboard (`/`) and pulse page (`/pulse`)
 - Deploy on Vercel; root directory `frontend`
-- Env: `NEXT_PUBLIC_API_URL` → Railway pulse-api base URL
+- Env: `NEXT_PUBLIC_API_URL` → Render pulse-api base URL
 - Live: [weekly-pulse-grow.vercel.app](https://weekly-pulse-grow.vercel.app)
 
-#### 7.3 — Artifact sync (no Railway volume) ✅
+#### 7.3 — Artifact sync (no persistent volume) ✅
 
 - `POST /api/sync/artifacts` — Bearer auth via `SYNC_SECRET`
 - `scripts/sync_public_api.py` — uploads `phases/` JSON/MD from local or CI
 - Weekly workflow sync step after pipeline when `PUBLIC_PULSE_API_URL` + `SYNC_SECRET` are set
-- **Note:** Railway redeploy clears synced data; re-run sync or wait for next Monday workflow
+- **Note:** Render redeploy / free-tier spin-down clears synced data; re-run sync or wait for next Monday workflow
 
 #### 7.4 — CORS and secrets ✅
 
 | Variable | Where | Purpose |
 |----------|--------|---------|
-| `SYNC_SECRET` | Railway + GitHub (same value) | Protect sync endpoint |
+| `SYNC_SECRET` | Render + GitHub (same value) | Protect sync endpoint |
 | `PUBLIC_PULSE_API_URL` | GitHub | Target for weekly sync |
-| `CORS_ORIGINS` | Railway | Vercel URL (browser access) |
+| `CORS_ORIGINS` | Render | Vercel URL (browser access) |
 | `NEXT_PUBLIC_API_URL` | Vercel | Frontend → API base URL |
 
 ### Inputs
 
 - Validated phase artifacts from Phases 1–5
-- Railway pulse-api service (separate from MCP-SERVER project)
+- Render pulse-api service (separate from MCP-SERVER project)
 - Vercel project linked to this repo
 
 ### Outputs
@@ -737,7 +737,7 @@ Phases 0–6 produce artifacts on disk and publish to Google Workspace. Phase 7 
 
 ### Exit criteria
 
-- `/api/pulse/latest` returns validated pulse JSON on Railway
+- `/api/pulse/latest` returns validated pulse JSON on Render
 - Vercel site shows dashboard stats and full pulse page
 - Weekly GitHub Action syncs after pipeline without manual laptop step
 
@@ -750,7 +750,7 @@ Phases 0–6 produce artifacts on disk and publish to Google Workspace. Phase 7 
 1. Ensure repository secrets are set (see [github-actions.md](./github-actions.md)), including `PUBLIC_PULSE_API_URL` and `SYNC_SECRET` for public sync.
 2. **Actions → Weekly Pulse → Run workflow** (manual test) or wait for **Monday 09:00 IST** schedule.
 3. Download artifacts; review Gmail draft manually before sending.
-4. Confirm public site updated: `/api/pulse/latest` on Railway and [weekly-pulse-grow.vercel.app](https://weekly-pulse-grow.vercel.app).
+4. Confirm public site updated: `/api/pulse/latest` on Render and [weekly-pulse-grow.vercel.app](https://weekly-pulse-grow.vercel.app).
 
 ### Option B — Local CLI
 
@@ -812,7 +812,7 @@ flowchart LR
 | GitHub Actions CI + weekly scheduler | 6 | Automated weekly runs |
 | FastAPI read API | 7 | Frontend, public consumers |
 | Next.js dashboard | 7 | Leadership, cross-functional |
-| Artifact sync to Railway | 7 | Public site weekly updates |
+| Artifact sync to Render | 7 | Public site weekly updates |
 
 ---
 

@@ -17,7 +17,7 @@ Shared **inputs** only (raw store CSV exports) live in `data/raw/`.
 | 7 | [phase-7/](phase-7/) | Deploy docs only — code in `src/api/`, `frontend/` (see [README](phase-7/README.md)) |
 
 Paths for phases 0–6 are defined in [config/product.yaml](../config/product.yaml) under `deliverables`.  
-Phase 7 does not add new pipeline JSON artifacts; it publishes existing artifacts via Railway + Vercel.  
+Phase 7 does not add new pipeline JSON artifacts; it publishes existing artifacts via Render + Vercel.  
 Code resolves phase 0–6 paths via [src/paths.py](../src/paths.py).
 
 ## Eval criteria

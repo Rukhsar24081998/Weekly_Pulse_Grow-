@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Upload local phase artifacts to the public Pulse API (Railway)."""
+"""Upload local phase artifacts to the public Pulse API (Render)."""
 
 from __future__ import annotations
 
@@ -51,12 +51,12 @@ def main() -> int:
     parser.add_argument(
         "--api-url",
         default=os.environ.get("PUBLIC_PULSE_API_URL", "").strip(),
-        help="Railway pulse-api base URL",
+        help="Render pulse-api base URL",
     )
     parser.add_argument(
         "--secret",
         default=os.environ.get("SYNC_SECRET", "").strip(),
-        help="Bearer token (same as SYNC_SECRET on Railway)",
+        help="Bearer token (same as SYNC_SECRET on Render)",
     )
     args = parser.parse_args()
 

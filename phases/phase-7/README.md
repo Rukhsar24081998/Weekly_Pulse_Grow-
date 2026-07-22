@@ -8,7 +8,7 @@
 
 ## Purpose
 
-Expose the latest validated pulse on public URLs — Railway read API + Vercel dashboard — without running the pipeline locally.
+Expose the latest validated pulse on public URLs — Render read API + Vercel dashboard — without running the pipeline locally.
 
 ## Why code is not only in this folder
 
@@ -19,8 +19,8 @@ Phase 7 is a **deployment and consumption layer**: it reads those artifacts and 
 |------|----------|------|
 | Read + sync API | `src/api/` | FastAPI (`GET /api/pulse/latest`, `POST /api/sync/artifacts`) |
 | Frontend | `frontend/` | Next.js dashboard + pulse page |
-| Sync script | `scripts/sync_public_api.py` | Push `phases/` to Railway after weekly run |
-| Railway image | `Dockerfile`, `railway.toml` | pulse-api service |
+| Sync script | `scripts/sync_public_api.py` | Push `phases/` to Render after weekly run |
+| Render image | `Dockerfile`, `render.yaml` | pulse-api service |
 | Tests | `tests/test_api.py`, `tests/test_api_sync.py` | API + sync regression |
 
 This folder documents Phase 7 deliverables and eval criteria, matching phases 0–6.
@@ -30,7 +30,7 @@ This folder documents Phase 7 deliverables and eval criteria, matching phases 0�
 | Service | URL |
 |---------|-----|
 | Frontend | [weekly-pulse-grow.vercel.app](https://weekly-pulse-grow.vercel.app) |
-| API | [weeklypulsegrow-production.up.railway.app](https://weeklypulsegrow-production.up.railway.app) |
+| API | Set after Render deploy (`https://pulse-api-xxxx.onrender.com`) |
 
 ## Run locally
 
@@ -43,10 +43,10 @@ python -m src.api
 cd frontend && npm run dev
 ```
 
-## Sync to Railway (after redeploy or first deploy)
+## Sync to Render (after redeploy or first deploy)
 
 ```bash
-export PUBLIC_PULSE_API_URL=https://weeklypulsegrow-production.up.railway.app
+export PUBLIC_PULSE_API_URL=https://YOUR-PULSE-API.onrender.com
 export SYNC_SECRET='your-secret'
 python scripts/sync_public_api.py
 ```

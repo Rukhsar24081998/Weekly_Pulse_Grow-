@@ -1,4 +1,4 @@
-"""Push pipeline artifacts from GitHub Actions (no Railway volume needed)."""
+"""Push pipeline artifacts from GitHub Actions (no persistent volume needed)."""
 
 from __future__ import annotations
 
