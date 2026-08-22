@@ -204,10 +204,10 @@ def _test_config(tmp: Path):
         max_themes=5,
         top_pulse_themes=3,
         groq=GroqConfig(
-            model="llama-3.3-70b-versatile",
+            model="openai/gpt-oss-120b",
             batch_size=40,
-            max_requests_per_minute=3,
-            min_seconds_between_requests=21,
+            max_requests_per_minute=2,
+            min_seconds_between_requests=30,
             max_samples_per_theme=10,
             max_daily_tokens_abort=80000,
             enabled=True,

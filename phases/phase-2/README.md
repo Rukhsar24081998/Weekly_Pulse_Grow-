@@ -43,7 +43,7 @@ Latest run: **1,000** reviews sampled from 2,143 → **5 themes**; top pulse the
 
 ## LLM
 
-**Provider:** Groq (`llama-3.3-70b-versatile`) · See [architecture §16](../../Docs/architecture.md) for rate limits (~8–10 calls, ~25–32K tokens/run).
+**Provider:** Groq (`openai/gpt-oss-120b`) · See [architecture §16](../../Docs/architecture.md) for rate limits (~8–10 calls, ~25–32K tokens/run).
 
 ## Exit gate
 

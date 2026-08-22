@@ -367,7 +367,7 @@ Validator blocks publish if PII patterns remain. Agent must not call MCP when va
 | Setting | Value |
 |---------|-------|
 | API key | `GROQ_API_KEY` (environment only) |
-| Default model | `llama-3.3-70b-versatile` |
+| Default model | `openai/gpt-oss-120b` (migrated from `llama-3.3-70b-versatile`, decommissioned 2026-08-16) |
 | Client | `src/themes/groq_client.py` |
 | Prompts | `prompts/groq-theme-classify.md`, `prompts/groq-theme-summary.md` |
 
@@ -560,7 +560,7 @@ Validator blocks publish if PII patterns remain. Agent must not call MCP when va
 | ~~Email body format~~ | ~~Full pulse vs summary + doc link~~ | **Resolved** — ADR-024 |
 | ~~Re-run same week~~ | ~~New doc/draft vs update existing~~ | **Resolved** — ADR-025 |
 | Hybrid LLM labeling | ~~Enable or rules-only~~ | **Resolved** — ADR-021 (Groq hybrid) |
-| Groq model | Default vs alternate | ADR-021 |
+| Groq model | ~~Default vs alternate~~ | **Resolved** — `openai/gpt-oss-120b` (ADR-021, migrated 2026-08-22) |
 
 When resolved, add a new ADR or update the relevant phase entry and mark deferred item closed.
 

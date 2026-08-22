@@ -378,7 +378,7 @@ flowchart LR
 2. **Groq-assisted (Tier 2):** For reviews with **no keyword match** or **multi-theme tie**, batch-classify via **Groq** — ambiguous subset only, after taxonomy expansion.
 3. **Groq summaries (Tier 3):** **One** Groq call per run: theme stats + 10 sample reviews per top theme → one-line leadership summaries in `themes.json`.
 
-**LLM provider:** [Groq](https://groq.com/) — model **`llama-3.3-70b-versatile`**, `GROQ_API_KEY` in environment only (see ADR-021). Phase 3 pulse text stays **template-first** (no Groq by default) to preserve daily token headroom.
+**LLM provider:** [Groq](https://groq.com/) — model **`openai/gpt-oss-120b`**, `GROQ_API_KEY` in environment only (see ADR-021). Phase 3 pulse text stays **template-first** (no Groq by default) to preserve daily token headroom.
 
 **Groq free-tier limits (must not exceed per weekly run):**
 
@@ -386,8 +386,8 @@ flowchart LR
 |-------|------:|----------------------------------|
 | Requests / minute | 30 | **≤ 10 requests** (paced) |
 | Requests / day | 1,000 | **~10 requests** (~1% of quota) |
-| Tokens / minute | 12,000 | **≤ 9,000 peak minute** (3 batched calls max, then pause) |
-| Tokens / day | 100,000 | **~25,000–32,000** (~25–32% of quota) |
+| Tokens / minute | 8,000 | **≤ 5,600 peak minute** (2 batched calls max, then pause) |
+| Tokens / day | 200,000 | **~25,000–32,000** (~13–16% of quota) |
 
 **Per-run call plan (1,000 reviews, after taxonomy expansion):**
 
@@ -397,7 +397,7 @@ flowchart LR
 | Theme summaries (top 5 themes, 10 samples each) | 1 | ~3,500 | ~3,500 |
 | **Total per weekly run** | **8–10** | — | **~25,000–32,000** |
 
-**Rate limiter (required in `groq_client.py`):** max **3 classify requests per rolling minute** (~9K tokens); **≥ 21 s** between consecutive requests; on `429` / rate-limit response, exponential backoff and retry once. Never parallelize Groq calls.
+**Rate limiter (required in `groq_client.py`):** max **2 classify requests per rolling minute** (~5.6K tokens); **≥ 30 s** between consecutive requests; on `429` / rate-limit response, exponential backoff and retry once. Never parallelize Groq calls.
 
 **Data-driven routing** (from Phase 1 profile — scaled to 1,000-review sample):
 
@@ -746,22 +746,22 @@ Phase 2 uses **Groq** as the LLM provider for theme work. Google Workspace remai
 |---------|-------|
 | Provider | Groq (`https://api.groq.com`) |
 | API key | `GROQ_API_KEY` in environment — never in repo |
-| Model | **`llama-3.3-70b-versatile`** (fixed for Phase 2) |
+| Model | **`openai/gpt-oss-120b`** (fixed for Phase 2; replaced `llama-3.3-70b-versatile` decommissioned 2026-08-16) |
 | Max reviews per run | **1,000** (subsample from Phase 1 output; configurable in `config/product.yaml`) |
-| Batch size (classify) | **40 reviews** per request (~2,800 tokens — fits 3 calls/min under 12K TPM) |
+| Batch size (classify) | **40 reviews** per request (~2,800 tokens — fits 2 calls/min under 8K TPM) |
 | Client | `src/themes/groq_client.py` (includes rate limiter + usage logging) |
 | Prompts | `prompts/groq-theme-classify.md`, `prompts/groq-theme-summary.md` |
 
 ### 16.2 Groq account limits (hard constraints)
 
-These are the **free-tier limits** for `llama-3.3-70b-versatile`. Phase 2 design must stay well inside them for a single weekly run and leave headroom for one retry pass.
+These are the **free-tier limits** for `openai/gpt-oss-120b`. Phase 2 design must stay well inside them for a single weekly run and leave headroom for one retry pass.
 
 | Limit | Quota | Safe Phase 2 target |
 |-------|------:|--------------------:|
-| Requests / minute | 30 | ≤ 10 (paced; max 3 back-to-back classify calls) |
+| Requests / minute | 30 | ≤ 2 (paced; max 2 back-to-back classify calls) |
 | Requests / day | 1,000 | ~10 per weekly run |
-| Tokens / minute | 12,000 | ≤ 9,000 in any rolling minute |
-| Tokens / day | 100,000 | ~25,000–32,000 per weekly run (~32% max) |
+| Tokens / minute | 8,000 | ≤ 5,600 in any rolling minute |
+| Tokens / day | 200,000 | ~25,000–32,000 per weekly run (~16% max) |
 
 **Operational rules:**
 
@@ -800,12 +800,13 @@ flowchart LR
 
 | Minute | Action | Cumulative tokens (est.) |
 |--------|--------|-------------------------:|
-| 0:00 | Classify batch 1–3 | ~8,400 |
-| 0:21 | Classify batch 4–6 | ~16,800 |
-| 0:42 | Classify batch 7–9 | ~25,200 |
-| 1:03 | Summary call | ~28,700 |
+| 0:00 | Classify batch 1–2 | ~5,600 |
+| 1:00 | Classify batch 3–4 | ~11,200 |
+| 2:00 | Classify batch 5–6 | ~16,800 |
+| 3:00 | Classify batch 7–8 | ~22,400 |
+| 4:00 | Classify batch 9 + summary | ~28,700 |
 
-Total wall time ~**1–2 minutes** of Groq calls; well under RPM and TPM caps.
+Total wall time ~**4–5 minutes** of Groq calls; well under RPM and within TPM caps.
 
 ### 16.4 Subsample policy (1,000 reviews)
 

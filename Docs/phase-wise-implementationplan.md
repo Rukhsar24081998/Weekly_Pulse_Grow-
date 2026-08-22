@@ -266,16 +266,16 @@ Leadership does not read hundreds of reviews — they read themes. Accurate grou
 
 #### 2.2 — Groq-assisted labeling (Tier 2 + Tier 3)
 
-**Provider:** Groq · **Model:** `llama-3.3-70b-versatile` · **Key:** `GROQ_API_KEY` (see ADR-021).
+**Provider:** Groq · **Model:** `openai/gpt-oss-120b` · **Key:** `GROQ_API_KEY` (see ADR-021).
 
 **Account limits (hard ceiling — design must comply):**
 
 | Limit | Quota | Phase 2 per-run target |
 |-------|------:|------------------------:|
-| Requests / minute | 30 | ≤ 10 (paced) |
+| Requests / minute | 30 | ≤ 2 (paced) |
 | Requests / day | 1,000 | ~10 |
-| Tokens / minute | 12,000 | ≤ 9,000 peak |
-| Tokens / day | 100,000 | ~25,000–32,000 |
+| Tokens / minute | 8,000 | ≤ 5,600 peak |
+| Tokens / day | 200,000 | ~25,000–32,000 |
 
 | When Groq runs | Input | Output | Calls |
 |----------------|-------|--------|------:|
@@ -293,8 +293,8 @@ Leadership does not read hundreds of reviews — they read themes. Accurate grou
 
 **Rate limiter (mandatory in `src/themes/groq_client.py`):**
 
-- Max **3 classify requests per rolling minute** (~9K tokens — under 12K TPM).
-- **≥ 21 seconds** between consecutive requests.
+- Max **2 classify requests per rolling minute** (~5.6K tokens — under 8K TPM).
+- **≥ 30 seconds** between consecutive requests.
 - **Sequential only** — no parallel Groq calls.
 - On HTTP 429: pause ≥ 60 s, retry once, then rules-only for remaining batches.
 - Log `groq_usage` (requests, estimated tokens) in `themes.json`.
@@ -354,7 +354,7 @@ Leadership does not read hundreds of reviews — they read themes. Accurate grou
 | Keywords too narrow | Expand taxonomy per DATA_PROFILE; add trading/brokerage/support terms |
 | Keywords too broad | Split themes or add negative keywords; Groq tie-break for multi-match |
 | Fallback bucket too large | Taxonomy expansion + 1,000 cap keeps ambiguous ≤ ~350 reviews |
-| Groq rate limit (429) | 3 req/min cap, 21 s spacing, 60 s backoff; rules-only fallback |
+| Groq rate limit (429) | 2 req/min cap, 30 s spacing, 60 s backoff; rules-only fallback |
 | Groq daily token cap (100K) | ~32K/run budget; no Groq in Phase 3; abort Groq if projected > 80K |
 | Groq API unavailable | Rules-only fallback; warn in `themes.json` |
 | Sample bias (1,000 vs 2,143) | Stratify by rating; document `sampled_from` in output |
