@@ -17,7 +17,7 @@ Use these **exact names** (case-sensitive):
 
 | Secret | Purpose | Example |
 |--------|---------|---------|
-| `MCP_SERVER_URL` | Railway MCP server | `https://mcp-server-rukhsar.up.railway.app` |
+| `MCP_SERVER_URL` | Render MCP server (see [MCP-SERVER/RENDER.md](https://github.com/Rukhsar24081998/MCP-SERVER/blob/main/RENDER.md)) | `https://mcp-server-xxxx.onrender.com` |
 | `PUBLISH_GOOGLE_DOC_ID` | Google Doc for append | your doc ID from the URL |
 | `DRAFT_RECIPIENT` | Gmail draft recipient |
 
@@ -44,8 +44,11 @@ cron: "30 3 * * 1"   # Monday 03:30 UTC = 09:00 IST
 3. `python -m src.themes.run --no-groq` (default — reliable in CI)
 4. `python -m src.pulse.run`
 5. `python -m src.guardrails.validate`
-6. `python -m src.publish.e2e_run` (Google Doc + Gmail draft)
+6. `python -m src.publish.e2e_run` — **manual only** when `publish: true` (skipped on schedule; MCP publish optional)
 7. `python scripts/phase6_signoff.py`
+8. `python scripts/sync_public_api.py` — updates Render pulse-api / public Vercel site
+
+Publish and sign-off use `continue-on-error: true` so a dead MCP server does not block the public site sync.
 
 Artifacts (pulse, run metadata, sign-off) are uploaded for **30 days** under Actions → workflow run → **Artifacts**.
 
@@ -54,7 +57,7 @@ Artifacts (pulse, run metadata, sign-off) are uploaded for **30 days** under Act
 1. Go to **Actions** → **Weekly Pulse** → **Run workflow**
 2. Options:
    - **use_groq:** `true` to enable Groq (may hit rate limits)
-   - **publish:** `false` to skip MCP publish (pipeline only)
+   - **publish:** `true` to publish via MCP (requires live `MCP_SERVER_URL` on Render)
 
 ## Local equivalent
 
@@ -74,4 +77,4 @@ python scripts/phase6_signoff.py
 - Groq free tier often rate-limits CI — weekly job defaults to **rules-only** themes
 - App Store RSS still caps at ~500 reviews (~1–2 weeks)
 - Gmail draft is **never auto-sent** — review in Gmail manually
-- MCP OAuth is on Railway, not in GitHub secrets
+- MCP OAuth lives on the **MCP-SERVER** Render service — set `MCP_SERVER_URL` in GitHub secrets

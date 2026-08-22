@@ -4,7 +4,7 @@ This project publishes to Google Workspace through a **deployed HTTP MCP server*
 
 | Item | Value |
 |------|-------|
-| Deployed server | https://mcp-server-rukhsar.up.railway.app |
+| Deployed server | Render (see [MCP-SERVER/RENDER.md](https://github.com/Rukhsar24081998/MCP-SERVER/blob/main/RENDER.md)) — was Railway |
 | Source repo | https://github.com/Rukhsar24081998/MCP-SERVER |
 | LIP-4-4 client | `src/publish/mcp_client.py` |
 

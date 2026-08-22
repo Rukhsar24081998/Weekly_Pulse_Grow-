@@ -17,7 +17,7 @@ on:
       publish:
         description: "Publish to Google Doc + Gmail draft via MCP"
         required: false
-        default: "true"
+        default: "false"
         type: choice
         options:
           - "true"
@@ -65,14 +65,15 @@ jobs:
         run: python -m src.guardrails.validate phases/phase-3/pulse.md
 
       - name: Phase 4+5 — publish via MCP
-        if: github.event_name == 'schedule' || github.event.inputs.publish != 'false'
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.publish == 'true'
+        continue-on-error: true
         run: python -m src.publish.e2e_run
 
       - name: Phase 6 — sign-off report
+        continue-on-error: true
         run: python scripts/phase6_signoff.py --require-artifacts
 
       - name: Sync pulse data to public API (Render)
-        continue-on-error: true
         env:
           PUBLIC_PULSE_API_URL: ${{ secrets.PUBLIC_PULSE_API_URL }}
           SYNC_SECRET: ${{ secrets.SYNC_SECRET }}
