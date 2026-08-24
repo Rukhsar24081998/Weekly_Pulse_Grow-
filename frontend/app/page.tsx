@@ -24,8 +24,8 @@ export default async function DashboardPage() {
   if (!status && !pulseData) {
     return (
       <ErrorPanel
-        title="API not reachable"
-        message="Start the Python API on port 8000, then run the pipeline to generate pulse artifacts."
+        title="Pulse data not available"
+        message="The weekly snapshot has not been published yet. Trigger Actions → Weekly Pulse, then refresh."
       />
     );
   }
@@ -39,7 +39,7 @@ export default async function DashboardPage() {
       <section>
         <h2 className="text-2xl font-semibold text-slate-900">Dashboard</h2>
         <p className="mt-1 text-sm text-slate-600">
-          Latest pipeline snapshot from your local API.
+          Latest weekly snapshot from the public pipeline.
         </p>
       </section>
 
@@ -104,7 +104,7 @@ export default async function DashboardPage() {
       ) : (
         <ErrorPanel
           title="No pulse artifact yet"
-          message="Run the pipeline to create phases/phase-3/pulse.json, then refresh this page."
+          message="Trigger Actions → Weekly Pulse, wait for it to finish, then refresh this page."
         />
       )}
     </div>

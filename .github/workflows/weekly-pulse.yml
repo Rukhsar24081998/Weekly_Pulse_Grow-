@@ -27,6 +27,8 @@ jobs:
   weekly-pulse:
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    permissions:
+      contents: write
 
     env:
       GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
@@ -74,11 +76,27 @@ jobs:
         run: python scripts/phase6_signoff.py --require-artifacts
 
       - name: Sync pulse data to public API (Render)
+        continue-on-error: true
         env:
           PUBLIC_PULSE_API_URL: ${{ secrets.PUBLIC_PULSE_API_URL }}
           SYNC_SECRET: ${{ secrets.SYNC_SECRET }}
         if: env.PUBLIC_PULSE_API_URL != '' && env.SYNC_SECRET != ''
         run: python scripts/sync_public_api.py
+
+      - name: Publish dashboard snapshot for Vercel
+        run: python scripts/export_dashboard_data.py
+
+      - name: Commit dashboard snapshot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add frontend/public/data/pulse-latest.json frontend/public/data/status.json
+          if git diff --cached --quiet; then
+            echo "No dashboard snapshot changes"
+            exit 0
+          fi
+          git commit -m "Update public dashboard snapshot"
+          git push
 
       - name: Upload pulse artifacts
         uses: actions/upload-artifact@v4

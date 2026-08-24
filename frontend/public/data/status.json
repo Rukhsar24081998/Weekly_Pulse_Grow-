@@ -1,0 +1,21 @@
+{
+  "product": "Groww App",
+  "artifacts": {
+    "reviews": true,
+    "themes": true,
+    "pulse_json": true,
+    "pulse_md": true,
+    "doc_metadata": false,
+    "run_metadata": false,
+    "signoff": false
+  },
+  "phases_dir": "phases/phase-3",
+  "reviews": {
+    "total": 2252
+  },
+  "pulse_summary": {
+    "week_ending": "2026-08-24",
+    "word_count": 239,
+    "validation_passed": true
+  }
+}

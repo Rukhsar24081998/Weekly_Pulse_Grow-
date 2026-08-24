@@ -1,12 +1,14 @@
+import pulseLatest from "../public/data/pulse-latest.json";
+import statusSnapshot from "../public/data/status.json";
 import type { HealthResponse, PulseLatestResponse, StatusResponse } from "./types";
 
-export const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
+const REMOTE_API =
+  process.env.VERCEL || process.env.NEXT_PUBLIC_USE_STATIC === "true"
+    ? ""
+    : (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/$/, "");
 
-async function fetchJson<T>(path: string): Promise<T> {
-  const response = await fetch(`${API_BASE}${path}`, {
-    cache: "no-store",
-  });
+async function fetchJson<T>(url: string): Promise<T> {
+  const response = await fetch(url, { cache: "no-store" });
   if (!response.ok) {
     const detail = await response.text();
     throw new Error(detail || `Request failed: ${response.status}`);
@@ -14,14 +16,32 @@ async function fetchJson<T>(path: string): Promise<T> {
   return response.json() as Promise<T>;
 }
 
-export function getHealth() {
-  return fetchJson<HealthResponse>("/api/health");
+function remoteUrl(path: string): string {
+  return `${REMOTE_API}${path}`;
 }
 
-export function getStatus() {
-  return fetchJson<StatusResponse>("/api/status");
+export async function getHealth() {
+  if (REMOTE_API) {
+    return fetchJson<HealthResponse>(remoteUrl("/api/health"));
+  }
+  return {
+    status: "ok",
+    service: "weekly-app-review-pulse-static",
+    product: statusSnapshot.product,
+    artifacts: statusSnapshot.artifacts,
+  } satisfies HealthResponse;
 }
 
-export function getLatestPulse() {
-  return fetchJson<PulseLatestResponse>("/api/pulse/latest");
+export async function getStatus() {
+  if (REMOTE_API) {
+    return fetchJson<StatusResponse>(remoteUrl("/api/status"));
+  }
+  return statusSnapshot as StatusResponse;
+}
+
+export async function getLatestPulse() {
+  if (REMOTE_API) {
+    return fetchJson<PulseLatestResponse>(remoteUrl("/api/pulse/latest"));
+  }
+  return pulseLatest as PulseLatestResponse;
 }
