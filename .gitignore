@@ -47,3 +47,5 @@ htmlcov/
 frontend/node_modules/
 frontend/.next/
 frontend/.env.local
+.vercel
+.env*
