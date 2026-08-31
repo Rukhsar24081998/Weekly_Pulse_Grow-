@@ -7,14 +7,20 @@
     "pulse_md": true,
     "doc_metadata": false,
     "run_metadata": false,
-    "signoff": false
+    "signoff": true
   },
   "phases_dir": "phases/phase-3",
   "reviews": {
-    "total": 2252
+    "total": 2334,
+    "app_store": 0,
+    "play_store": 2334,
+    "window": {
+      "start": "2026-06-08",
+      "end": "2026-08-31"
+    }
   },
   "pulse_summary": {
-    "week_ending": "2026-08-24",
+    "week_ending": "2026-08-31",
     "word_count": 239,
     "validation_passed": true
   }
