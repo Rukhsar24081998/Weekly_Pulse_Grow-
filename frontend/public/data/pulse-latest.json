@@ -1,11 +1,11 @@
 {
   "pulse": {
     "product": "Groww App",
-    "week_ending": "2026-08-31",
+    "week_ending": "2026-09-07",
     "review_window_weeks": 12,
-    "window_start": "2026-06-08",
-    "window_end": "2026-08-31",
-    "total_reviews": 2334,
+    "window_start": "2026-06-15",
+    "window_end": "2026-09-07",
+    "total_reviews": 2440,
     "sample_size": 1000,
     "top_themes": [
       {
@@ -13,42 +13,42 @@
         "theme_id": "performance",
         "label": "App performance, bugs & crashes",
         "summary": "Mixed sentiment \u2014 recurring friction across user sessions.",
-        "review_count": 623,
-        "avg_rating": 3.42
+        "review_count": 628,
+        "avg_rating": 3.37
       },
       {
         "rank": 2,
         "theme_id": "discovery",
         "label": "Search, explore & investing features",
         "summary": "Mixed sentiment \u2014 recurring friction across user sessions.",
-        "review_count": 215,
-        "avg_rating": 3.44
+        "review_count": 220,
+        "avg_rating": 3.43
       },
       {
         "rank": 3,
         "theme_id": "statements",
         "label": "Portfolio, statements & reports",
-        "summary": "Strong negative sentiment \u2014 repeated failures reported in this area.",
-        "review_count": 78,
-        "avg_rating": 2.21
+        "summary": "Low ratings \u2014 reliability and correctness concerns dominate feedback.",
+        "review_count": 75,
+        "avg_rating": 2.37
       }
     ],
     "quotes": [
       {
         "theme_id": "performance",
-        "text": "I can't log in the app. it's stuck in the allow permission page. I contacted a customer service representative. he is\u2026",
+        "text": "The Groww app service is not working properly. Data is not loading in the app, and nothing is displayed on the\u2026",
         "rating": 1,
         "store": "play_store"
       },
       {
         "theme_id": "discovery",
-        "text": "poor customer care. no call receive or massage. last two days my mutual fund transaction was canceled but i try to\u2026",
+        "text": "Misleading app, the app will create F&O, Bonds accounts without your concern. By mistake if you tap on them, it will\u2026",
         "rating": 1,
         "store": "play_store"
       },
       {
         "theme_id": "statements",
-        "text": "Grow charges maximum brokerage in the market and provides poor services , their app doesn't publish reports on time , app\u2026",
+        "text": "I am.um happy. makingn cheating and gambling. because of this soany middle class family life loss. even me to . I\u2026",
         "rating": 1,
         "store": "play_store"
       }
@@ -67,20 +67,20 @@
       {
         "theme_id": "statements",
         "action": "Add in-app tax statement and P&L download status tracker",
-        "rationale": "64% negative; portfolio report issues drive strong negative sentiment"
+        "rationale": "56% negative; portfolio report issues drive strong negative sentiment"
       }
     ],
-    "word_count": 239,
+    "word_count": 238,
     "validation_passed": true,
     "validation_errors": [],
-    "markdown": "# Groww App \u2014 Weekly Pulse\n\n**Week ending 31 Aug 2026** \u00b7 12-week window (08 Jun 2026 \u2013 31 Aug 2026) \u00b7 **1,000** reviews sampled from **2,334**\n\n## Top themes\n\n**1. App performance, bugs & crashes**\n623 reviews \u00b7 3.4\u2605 avg \u00b7 mixed sentiment\nMixed sentiment \u2014 recurring friction across user sessions.\n\n**2. Search, explore & investing features**\n215 reviews \u00b7 3.4\u2605 avg \u00b7 mixed sentiment\nMixed sentiment \u2014 recurring friction across user sessions.\n\n**3. Portfolio, statements & reports**\n78 reviews \u00b7 2.2\u2605 avg \u00b7 low ratings\nStrong negative sentiment \u2014 repeated failures reported in this area.\n\n## User quotes\n\n**1\u2605 \u00b7 Play Store**\n> I can't log in the app. it's stuck in the allow permission page. I contacted a customer service representative. he is\u2026\n\n**1\u2605 \u00b7 Play Store**\n> poor customer care. no call receive or massage. last two days my mutual fund transaction was canceled but i try to\u2026\n\n**1\u2605 \u00b7 Play Store**\n> Grow charges maximum brokerage in the market and provides poor services , their app doesn't publish reports on time , app\u2026\n\n## Recommended actions\n\n1. **Investigate app hangs and latency during market hours** \u2014 High volume of lag and crash reports during trading sessions\n2. **Fix F&O and options chain order execution issues** \u2014 Users report broken trading features and chart failures\n3. **Add in-app tax statement and P&L download status tracker** \u2014 64% negative; portfolio report issues drive strong negative sentiment\n",
-    "generated_at": "2026-08-31T09:57:28.171578+00:00",
+    "markdown": "# Groww App \u2014 Weekly Pulse\n\n**Week ending 07 Sep 2026** \u00b7 12-week window (15 Jun 2026 \u2013 07 Sep 2026) \u00b7 **1,000** reviews sampled from **2,440**\n\n## Top themes\n\n**1. App performance, bugs & crashes**\n628 reviews \u00b7 3.4\u2605 avg \u00b7 mixed sentiment\nMixed sentiment \u2014 recurring friction across user sessions.\n\n**2. Search, explore & investing features**\n220 reviews \u00b7 3.4\u2605 avg \u00b7 mixed sentiment\nMixed sentiment \u2014 recurring friction across user sessions.\n\n**3. Portfolio, statements & reports**\n75 reviews \u00b7 2.4\u2605 avg \u00b7 low ratings\nLow ratings \u2014 reliability and correctness concerns dominate feedback.\n\n## User quotes\n\n**1\u2605 \u00b7 Play Store**\n> The Groww app service is not working properly. Data is not loading in the app, and nothing is displayed on the\u2026\n\n**1\u2605 \u00b7 Play Store**\n> Misleading app, the app will create F&O, Bonds accounts without your concern. By mistake if you tap on them, it will\u2026\n\n**1\u2605 \u00b7 Play Store**\n> I am.um happy. makingn cheating and gambling. because of this soany middle class family life loss. even me to . I\u2026\n\n## Recommended actions\n\n1. **Investigate app hangs and latency during market hours** \u2014 High volume of lag and crash reports during trading sessions\n2. **Fix F&O and options chain order execution issues** \u2014 Users report broken trading features and chart failures\n3. **Add in-app tax statement and P&L download status tracker** \u2014 56% negative; portfolio report issues drive strong negative sentiment\n",
+    "generated_at": "2026-09-07T08:31:24.443064+00:00",
     "source": {
       "themes_path": "/home/runner/work/Weekly_Pulse_Grow-/Weekly_Pulse_Grow-/phases/phase-2/themes.json",
       "reviews_path": "/home/runner/work/Weekly_Pulse_Grow-/Weekly_Pulse_Grow-/phases/phase-1/reviews.json"
     }
   },
-  "markdown": "# Groww App \u2014 Weekly Pulse\n\n**Week ending 31 Aug 2026** \u00b7 12-week window (08 Jun 2026 \u2013 31 Aug 2026) \u00b7 **1,000** reviews sampled from **2,334**\n\n## Top themes\n\n**1. App performance, bugs & crashes**\n623 reviews \u00b7 3.4\u2605 avg \u00b7 mixed sentiment\nMixed sentiment \u2014 recurring friction across user sessions.\n\n**2. Search, explore & investing features**\n215 reviews \u00b7 3.4\u2605 avg \u00b7 mixed sentiment\nMixed sentiment \u2014 recurring friction across user sessions.\n\n**3. Portfolio, statements & reports**\n78 reviews \u00b7 2.2\u2605 avg \u00b7 low ratings\nStrong negative sentiment \u2014 repeated failures reported in this area.\n\n## User quotes\n\n**1\u2605 \u00b7 Play Store**\n> I can't log in the app. it's stuck in the allow permission page. I contacted a customer service representative. he is\u2026\n\n**1\u2605 \u00b7 Play Store**\n> poor customer care. no call receive or massage. last two days my mutual fund transaction was canceled but i try to\u2026\n\n**1\u2605 \u00b7 Play Store**\n> Grow charges maximum brokerage in the market and provides poor services , their app doesn't publish reports on time , app\u2026\n\n## Recommended actions\n\n1. **Investigate app hangs and latency during market hours** \u2014 High volume of lag and crash reports during trading sessions\n2. **Fix F&O and options chain order execution issues** \u2014 Users report broken trading features and chart failures\n3. **Add in-app tax statement and P&L download status tracker** \u2014 64% negative; portfolio report issues drive strong negative sentiment\n",
+  "markdown": "# Groww App \u2014 Weekly Pulse\n\n**Week ending 07 Sep 2026** \u00b7 12-week window (15 Jun 2026 \u2013 07 Sep 2026) \u00b7 **1,000** reviews sampled from **2,440**\n\n## Top themes\n\n**1. App performance, bugs & crashes**\n628 reviews \u00b7 3.4\u2605 avg \u00b7 mixed sentiment\nMixed sentiment \u2014 recurring friction across user sessions.\n\n**2. Search, explore & investing features**\n220 reviews \u00b7 3.4\u2605 avg \u00b7 mixed sentiment\nMixed sentiment \u2014 recurring friction across user sessions.\n\n**3. Portfolio, statements & reports**\n75 reviews \u00b7 2.4\u2605 avg \u00b7 low ratings\nLow ratings \u2014 reliability and correctness concerns dominate feedback.\n\n## User quotes\n\n**1\u2605 \u00b7 Play Store**\n> The Groww app service is not working properly. Data is not loading in the app, and nothing is displayed on the\u2026\n\n**1\u2605 \u00b7 Play Store**\n> Misleading app, the app will create F&O, Bonds accounts without your concern. By mistake if you tap on them, it will\u2026\n\n**1\u2605 \u00b7 Play Store**\n> I am.um happy. makingn cheating and gambling. because of this soany middle class family life loss. even me to . I\u2026\n\n## Recommended actions\n\n1. **Investigate app hangs and latency during market hours** \u2014 High volume of lag and crash reports during trading sessions\n2. **Fix F&O and options chain order execution issues** \u2014 Users report broken trading features and chart failures\n3. **Add in-app tax statement and P&L download status tracker** \u2014 56% negative; portfolio report issues drive strong negative sentiment\n",
   "paths": {
     "json": "phases/phase-3/pulse.json",
     "markdown": "phases/phase-3/pulse.md"
