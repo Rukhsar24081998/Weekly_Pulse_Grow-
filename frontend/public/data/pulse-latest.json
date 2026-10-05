@@ -1,11 +1,11 @@
 {
   "pulse": {
     "product": "Groww App",
-    "week_ending": "2026-09-28",
+    "week_ending": "2026-10-05",
     "review_window_weeks": 12,
-    "window_start": "2026-07-06",
-    "window_end": "2026-09-28",
-    "total_reviews": 2501,
+    "window_start": "2026-07-13",
+    "window_end": "2026-10-05",
+    "total_reviews": 2456,
     "sample_size": 1000,
     "top_themes": [
       {
@@ -13,24 +13,24 @@
         "theme_id": "performance",
         "label": "App performance, bugs & crashes",
         "summary": "Mixed sentiment \u2014 recurring friction across user sessions.",
-        "review_count": 653,
-        "avg_rating": 3.25
+        "review_count": 647,
+        "avg_rating": 3.3
       },
       {
         "rank": 2,
         "theme_id": "discovery",
         "label": "Search, explore & investing features",
         "summary": "Mixed sentiment \u2014 recurring friction across user sessions.",
-        "review_count": 203,
-        "avg_rating": 3.39
+        "review_count": 197,
+        "avg_rating": 3.45
       },
       {
         "rank": 3,
         "theme_id": "statements",
         "label": "Portfolio, statements & reports",
-        "summary": "Low ratings \u2014 reliability and correctness concerns dominate feedback.",
-        "review_count": 81,
-        "avg_rating": 2.38
+        "summary": "Strong negative sentiment \u2014 repeated failures reported in this area.",
+        "review_count": 86,
+        "avg_rating": 2.29
       }
     ],
     "quotes": [
@@ -42,7 +42,7 @@
       },
       {
         "theme_id": "discovery",
-        "text": "3rd class broker, my trading account showing blocked, not able to trade or do anything, all segment showing active i connect\u2026",
+        "text": "stock ko ek bar bechne ke bad kisi or rate par usi stock ko same day bay karne par stock purane\u2026",
         "rating": 1,
         "store": "play_store"
       },
@@ -67,20 +67,20 @@
       {
         "theme_id": "statements",
         "action": "Add in-app tax statement and P&L download status tracker",
-        "rationale": "58% negative; portfolio report issues drive strong negative sentiment"
+        "rationale": "60% negative; portfolio report issues drive strong negative sentiment"
       }
     ],
-    "word_count": 238,
+    "word_count": 239,
     "validation_passed": true,
     "validation_errors": [],
-    "markdown": "# Groww App \u2014 Weekly Pulse\n\n**Week ending 28 Sep 2026** \u00b7 12-week window (06 Jul 2026 \u2013 28 Sep 2026) \u00b7 **1,000** reviews sampled from **2,501**\n\n## Top themes\n\n**1. App performance, bugs & crashes**\n653 reviews \u00b7 3.2\u2605 avg \u00b7 mixed sentiment\nMixed sentiment \u2014 recurring friction across user sessions.\n\n**2. Search, explore & investing features**\n203 reviews \u00b7 3.4\u2605 avg \u00b7 mixed sentiment\nMixed sentiment \u2014 recurring friction across user sessions.\n\n**3. Portfolio, statements & reports**\n81 reviews \u00b7 2.4\u2605 avg \u00b7 low ratings\nLow ratings \u2014 reliability and correctness concerns dominate feedback.\n\n## User quotes\n\n**1\u2605 \u00b7 Play Store**\n> bhot hi ghatiya app hai.jab work karna chahiye tab nhi hota hai.aur kabhi2 postion bhi show ni hoti hai.no active position\u2026\n\n**1\u2605 \u00b7 Play Store**\n> 3rd class broker, my trading account showing blocked, not able to trade or do anything, all segment showing active i connect\u2026\n\n**1\u2605 \u00b7 Play Store**\n> disgusting app. total fraud. the money doesn't get credited neither to this app wallet nor to the bank. Support executives are\u2026\n\n## Recommended actions\n\n1. **Investigate app hangs and latency during market hours** \u2014 High volume of lag and crash reports during trading sessions\n2. **Fix F&O and options chain order execution issues** \u2014 Users report broken trading features and chart failures\n3. **Add in-app tax statement and P&L download status tracker** \u2014 58% negative; portfolio report issues drive strong negative sentiment\n",
-    "generated_at": "2026-09-28T10:01:35.647264+00:00",
+    "markdown": "# Groww App \u2014 Weekly Pulse\n\n**Week ending 05 Oct 2026** \u00b7 12-week window (13 Jul 2026 \u2013 05 Oct 2026) \u00b7 **1,000** reviews sampled from **2,456**\n\n## Top themes\n\n**1. App performance, bugs & crashes**\n647 reviews \u00b7 3.3\u2605 avg \u00b7 mixed sentiment\nMixed sentiment \u2014 recurring friction across user sessions.\n\n**2. Search, explore & investing features**\n197 reviews \u00b7 3.5\u2605 avg \u00b7 mixed sentiment\nMixed sentiment \u2014 recurring friction across user sessions.\n\n**3. Portfolio, statements & reports**\n86 reviews \u00b7 2.3\u2605 avg \u00b7 low ratings\nStrong negative sentiment \u2014 repeated failures reported in this area.\n\n## User quotes\n\n**1\u2605 \u00b7 Play Store**\n> bhot hi ghatiya app hai.jab work karna chahiye tab nhi hota hai.aur kabhi2 postion bhi show ni hoti hai.no active position\u2026\n\n**1\u2605 \u00b7 Play Store**\n> stock ko ek bar bechne ke bad kisi or rate par usi stock ko same day bay karne par stock purane\u2026\n\n**1\u2605 \u00b7 Play Store**\n> disgusting app. total fraud. the money doesn't get credited neither to this app wallet nor to the bank. Support executives are\u2026\n\n## Recommended actions\n\n1. **Investigate app hangs and latency during market hours** \u2014 High volume of lag and crash reports during trading sessions\n2. **Fix F&O and options chain order execution issues** \u2014 Users report broken trading features and chart failures\n3. **Add in-app tax statement and P&L download status tracker** \u2014 60% negative; portfolio report issues drive strong negative sentiment\n",
+    "generated_at": "2026-10-05T10:42:49.586973+00:00",
     "source": {
       "themes_path": "/home/runner/work/Weekly_Pulse_Grow-/Weekly_Pulse_Grow-/phases/phase-2/themes.json",
       "reviews_path": "/home/runner/work/Weekly_Pulse_Grow-/Weekly_Pulse_Grow-/phases/phase-1/reviews.json"
     }
   },
-  "markdown": "# Groww App \u2014 Weekly Pulse\n\n**Week ending 28 Sep 2026** \u00b7 12-week window (06 Jul 2026 \u2013 28 Sep 2026) \u00b7 **1,000** reviews sampled from **2,501**\n\n## Top themes\n\n**1. App performance, bugs & crashes**\n653 reviews \u00b7 3.2\u2605 avg \u00b7 mixed sentiment\nMixed sentiment \u2014 recurring friction across user sessions.\n\n**2. Search, explore & investing features**\n203 reviews \u00b7 3.4\u2605 avg \u00b7 mixed sentiment\nMixed sentiment \u2014 recurring friction across user sessions.\n\n**3. Portfolio, statements & reports**\n81 reviews \u00b7 2.4\u2605 avg \u00b7 low ratings\nLow ratings \u2014 reliability and correctness concerns dominate feedback.\n\n## User quotes\n\n**1\u2605 \u00b7 Play Store**\n> bhot hi ghatiya app hai.jab work karna chahiye tab nhi hota hai.aur kabhi2 postion bhi show ni hoti hai.no active position\u2026\n\n**1\u2605 \u00b7 Play Store**\n> 3rd class broker, my trading account showing blocked, not able to trade or do anything, all segment showing active i connect\u2026\n\n**1\u2605 \u00b7 Play Store**\n> disgusting app. total fraud. the money doesn't get credited neither to this app wallet nor to the bank. Support executives are\u2026\n\n## Recommended actions\n\n1. **Investigate app hangs and latency during market hours** \u2014 High volume of lag and crash reports during trading sessions\n2. **Fix F&O and options chain order execution issues** \u2014 Users report broken trading features and chart failures\n3. **Add in-app tax statement and P&L download status tracker** \u2014 58% negative; portfolio report issues drive strong negative sentiment\n",
+  "markdown": "# Groww App \u2014 Weekly Pulse\n\n**Week ending 05 Oct 2026** \u00b7 12-week window (13 Jul 2026 \u2013 05 Oct 2026) \u00b7 **1,000** reviews sampled from **2,456**\n\n## Top themes\n\n**1. App performance, bugs & crashes**\n647 reviews \u00b7 3.3\u2605 avg \u00b7 mixed sentiment\nMixed sentiment \u2014 recurring friction across user sessions.\n\n**2. Search, explore & investing features**\n197 reviews \u00b7 3.5\u2605 avg \u00b7 mixed sentiment\nMixed sentiment \u2014 recurring friction across user sessions.\n\n**3. Portfolio, statements & reports**\n86 reviews \u00b7 2.3\u2605 avg \u00b7 low ratings\nStrong negative sentiment \u2014 repeated failures reported in this area.\n\n## User quotes\n\n**1\u2605 \u00b7 Play Store**\n> bhot hi ghatiya app hai.jab work karna chahiye tab nhi hota hai.aur kabhi2 postion bhi show ni hoti hai.no active position\u2026\n\n**1\u2605 \u00b7 Play Store**\n> stock ko ek bar bechne ke bad kisi or rate par usi stock ko same day bay karne par stock purane\u2026\n\n**1\u2605 \u00b7 Play Store**\n> disgusting app. total fraud. the money doesn't get credited neither to this app wallet nor to the bank. Support executives are\u2026\n\n## Recommended actions\n\n1. **Investigate app hangs and latency during market hours** \u2014 High volume of lag and crash reports during trading sessions\n2. **Fix F&O and options chain order execution issues** \u2014 Users report broken trading features and chart failures\n3. **Add in-app tax statement and P&L download status tracker** \u2014 60% negative; portfolio report issues drive strong negative sentiment\n",
   "paths": {
     "json": "phases/phase-3/pulse.json",
     "markdown": "phases/phase-3/pulse.md"
