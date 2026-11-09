@@ -11,16 +11,16 @@
   },
   "phases_dir": "phases/phase-3",
   "reviews": {
-    "total": 2521,
-    "app_store": 198,
-    "play_store": 2323,
+    "total": 2345,
+    "app_store": 68,
+    "play_store": 2277,
     "window": {
-      "start": "2026-08-10",
-      "end": "2026-11-02"
+      "start": "2026-08-17",
+      "end": "2026-11-09"
     }
   },
   "pulse_summary": {
-    "week_ending": "2026-11-02",
+    "week_ending": "2026-11-09",
     "word_count": 239,
     "validation_passed": true
   }
